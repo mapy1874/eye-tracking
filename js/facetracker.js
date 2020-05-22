@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function() { // will only run after the DOM is ready for JS to execute
   const video = document.getElementById('webcam');
   const overlay = document.getElementById('overlay');
 

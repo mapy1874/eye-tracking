@@ -20,9 +20,9 @@ window.training = {
         strides: 1,
         activation: 'relu',
         kernelInitializer: 'varianceScaling',
-      })
+      }) // creates a convolution kernel
       .apply(inputImage);
-
+    // order of ReLU and maxpooling does not matter https://stackoverflow.com/questions/35543428/activation-function-after-pooling-layer-or-convolutional-layer
     const maxpool = tf.layers
       .maxPooling2d({
         poolSize: [2, 2],
@@ -31,11 +31,12 @@ window.training = {
       .apply(conv);
 
     const flat = tf.layers.flatten().apply(maxpool);
-
+    // set 20% of input unit to 0 to avoid overfitting
     const dropout = tf.layers.dropout(0.2).apply(flat);
 
     const concat = tf.layers.concatenate().apply([dropout, inputMeta]);
 
+    // create a fully connected layer
     const output = tf.layers
       .dense({
         units: 2,
@@ -88,7 +89,7 @@ window.training = {
       validationData: [dataset.val.x, dataset.val.y],
       callbacks: {
         onEpochEnd: async function(epoch, logs) {
-          console.info('Epoch', epoch, 'losses:', logs);
+          console.info('Epoch', epoch, 'losses:', logs.loss);
           training.epochsTrained += 1;
           ui.setContent('n-epochs', training.epochsTrained);
           ui.setContent('train-loss', logs.loss.toFixed(5));
@@ -103,13 +104,14 @@ window.training = {
             // Store best model:
             await training.currentModel.save(bestModelPath);
           }
-
+          // animation will only be performed on the next animation frame
           return await tf.nextFrame();
         },
         onTrainEnd: async function() {
           console.info('Finished training');
 
           // Load best model:
+          // wont count the epochs after the bestEpoch
           training.epochsTrained -= epochs - bestEpoch;
           console.info('Loading best epoch:', training.epochsTrained);
           ui.setContent('n-epochs', training.epochsTrained);
@@ -144,7 +146,7 @@ window.training = {
     const metaInfos = dataset.getMetaInfos();
     const prediction = training.currentModel.predict([img, metaInfos]);
     const predictionData = await prediction.data();
-
+    console.log(predictionData)
     tf.dispose([img, metaInfos, prediction]);
 
     return [predictionData[0] + 0.5, predictionData[1] + 0.5];

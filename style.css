@@ -12,6 +12,15 @@ body, html {
   left: 0;
 }
 
+#pointer{
+background: red;
+height: 30px;
+width: 30px;
+top: 10px;
+left: 10px;
+position: relative;
+}
+
 #eyes {
   position: absolute;
   top: 0;

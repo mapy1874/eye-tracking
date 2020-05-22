@@ -72,12 +72,23 @@
     </div>
   </div>
 
-  <video id="webcam" width="400" height="300" autoplay></video>
+  <video id="webcam" width="400" height="300"></video>
   <canvas id="overlay" width="400" height="300"></canvas>
+  <div id = "pointer"></div>
+  <style>
+      #pointer{
+      background: red;
+      height: 30px;
+      width: 30px;
+      top: 10px;
+      left: 10px;
+      position: relative;
+      }
+  </style>
 
   <footer>
-    Created with TensorFlow.js by Max Schumacher.
-    <a href="https://github.com/cpury/lookie-lookie" target="_blank" alt="Source">Source</a>
+    Created with TensorFlow.js by Max Schumacher. Revised by Patrick Ma.
+    <a href="https://github.com/mapy1874/lookie-lookie" target="_blank" alt="Source">Source</a>
   </footer>
 
   <canvas id="eyes" width="50" height="25"></canvas>

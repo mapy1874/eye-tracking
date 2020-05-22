@@ -13,7 +13,7 @@ $(document).ready(function() {
 
     const width = maxX - minX;
     const height = maxY - minY;
-
+    // the exact parameter for strokeRectangle
     return [minX, minY, width, height];
   }
 
@@ -34,6 +34,7 @@ $(document).ready(function() {
 
       // The video might internally have a different size, so we need these
       // factors to rescale the eyes rectangle before cropping:
+      // videoWidth is the INTRINSIC width of the video
       const resizeFactorX = video.videoWidth / video.width;
       const resizeFactorY = video.videoHeight / video.height;
 
@@ -61,6 +62,7 @@ $(document).ready(function() {
     trackingLoop();
   }
 
+  // ask user for permission of using video
   navigator.mediaDevices
     .getUserMedia({
       video: true,
@@ -83,6 +85,8 @@ $(document).ready(function() {
 
   function getImage() {
     // Capture the current image in the eyes canvas as a tensor.
+    // tf.tidy(): cleans up all intermediate tensors allocated by fn except 
+    // those returned by fn. fn must not return a Promise
     return tf.tidy(function() {
       const image = tf.browser.fromPixels($('#eyes')[0]);
       // Add a batch dimension:
@@ -108,11 +112,52 @@ $(document).ready(function() {
     },
   };
 
+  // will have a normalized width, height [-1,1]
+  class CalibrationPositions {
+    constructor(){
+      this.i = 0;
+      this.positions = [[-1,-1],[1,-1],[1,1],[-1,1],
+                        [0, -1],[1,0],[0, 1],[-1,0],
+                      ];
+    }
+    next() {
+      // [width, height]
+      let coord =  [this.positions[this.i][0]*0.95,this.positions[this.i][1]*0.95];
+      this.i++;
+      if (this.i == this.positions.length) {
+        this.i = 0;
+      }
+      return coord;
+    }
+  }
+
+  const iterator = new CalibrationPositions();
+
+  const moveCalibration = () => {
+    position = iterator.next();
+    const pointerWidth = $('#pointer').outerWidth();
+    const pointerHeight = $('#pointer').outerHeight();
+
+    const x = ((position[0] + 1) / 2) * ($(window).width()-pointerWidth);
+    const y = ((position[1] + 1) / 2) * ($(window).height()-pointerHeight);
+    
+    // Move pointer there:
+    const $pointer = $('#pointer');
+    $pointer.css('left', x + 'px');
+    $pointer.css('top', y + 'px');
+    return position
+  }
+
+
   function captureExample() {
     // Take the latest image from the eyes canvas and add it to our dataset.
     tf.tidy(function() {
       const image = getImage();
-      const mousePos = tf.tensor1d([mouse.x, mouse.y]).expandDims(0);
+      const $pointer = $('#pointer');
+      const normalizedX = (parseInt($pointer.css("left"),10)/$(window).width())*2-1;
+      const normalizedY = (parseInt($pointer.css("top"),10)/$(window).height())*2-1;
+      const mousePos = tf.tensor1d([normalizedX, normalizedY]).expandDims(0);
+      console.log(`${normalizedX}, ${normalizedY}`);
 
       // Choose whether to add it to training (80%) or validation (20%) set:
       const subset = dataset[Math.random() > 0.2 ? 'train' : 'val'];
@@ -125,7 +170,7 @@ $(document).ready(function() {
         // Concatenate it to existing tensor
         const oldX = subset.x;
         const oldY = subset.y;
-
+        // Concatenates a list of tf.Tensors along a given axis.
         subset.x = tf.keep(oldX.concat(image, 0));
         subset.y = tf.keep(oldY.concat(mousePos, 0));
       }
@@ -133,8 +178,11 @@ $(document).ready(function() {
       // Increase counter
       subset.n += 1;
     });
+    // move to the next calibration spot
+    moveCalibration();
   }
 
+  // detecting whether space has been pressed
   $('body').keyup(function(event) {
     // On space key:
     if (event.keyCode == 32) {
