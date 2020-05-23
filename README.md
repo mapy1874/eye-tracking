@@ -9,3 +9,7 @@ track your eye movement inside the browser. No backend neccessary.
 
 Open index.html in a modern browser like Chrome or Firefox. A tutorial will
 guide you through it.
+
+## Contributors
+
+Created with TensorFlow.js by [Max Schumacher](https://github.com/cpury). Revised by [Patrick Ma](https://github.com/mapy1874/) under the supervision of [Gary Bishop](https://www.cs.unc.edu/~gb/).
