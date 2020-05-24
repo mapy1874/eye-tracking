@@ -151,9 +151,11 @@ window.dataset = {
     // Takes the coordinates of the mouse.
     tf.tidy(function() {
       const img = dataset.getImage();
-      const mousePos = mouse.getMousePos();
+      const positions = calibration.getCurPosition();
+      console.log(`mousePos: ${positions}`);
       const metaInfos = tf.keep(dataset.getMetaInfos());
-      dataset.addExample(img, metaInfos, mousePos);
+      dataset.addExample(img, metaInfos, positions);
+      calibration.moveCalibration();
     });
   },
 

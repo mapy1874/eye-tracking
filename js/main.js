@@ -11,7 +11,7 @@ $(document).ready(function() {
     training.getPrediction().then(prediction => {
       const left = prediction[0] * ($('body').width() - targetSize);
       const top = prediction[1] * ($('body').height() - targetSize);
-
+      console.log(`left:${left}, top: ${top}`);
       $target.css('left', left + 'px');
       $target.css('top', top + 'px');
     });

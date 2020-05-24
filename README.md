@@ -12,4 +12,4 @@ guide you through it.
 
 ## Contributors
 
-Created with TensorFlow.js by [Max Schumacher](https://github.com/cpury). Revised by [Patrick Ma](https://github.com/mapy1874/) under the supervision of [Gary Bishop](https://www.cs.unc.edu/~gb/).
+Created with TensorFlow.js by [Max Schumacher](https://github.com/cpury). Revised by [Patrick Ma](https://github.com/mapy1874/) under the supervision of [Gary Bishop](https://www.cs.unc.edu/~gb/).`

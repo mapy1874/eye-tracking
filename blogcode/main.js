@@ -156,8 +156,9 @@ $(document).ready(function() {
       const $pointer = $('#pointer');
       const normalizedX = (parseInt($pointer.css("left"),10)/$(window).width())*2-1;
       const normalizedY = (parseInt($pointer.css("top"),10)/$(window).height())*2-1;
+      console.log(`X:${normalizedX},Y:${normalizedY}`)
       const mousePos = tf.tensor1d([normalizedX, normalizedY]).expandDims(0);
-      console.log(`${normalizedX}, ${normalizedY}`);
+      //console.log(`${normalizedX}, ${normalizedY}`);
 
       // Choose whether to add it to training (80%) or validation (20%) set:
       const subset = dataset[Math.random() > 0.2 ? 'train' : 'val'];
