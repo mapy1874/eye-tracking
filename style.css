@@ -12,14 +12,6 @@ body, html {
   left: 0;
 }
 
-#pointer{
-background: red;
-height: 30px;
-width: 30px;
-top: 10px;
-left: 10px;
-position: relative;
-}
 
 #eyes {
   position: absolute;
@@ -152,4 +144,61 @@ button {
 
 #data-uploader, #model-uploader {
   display: none;
+}
+
+
+
+/** For adding the butterfly **/
+.pl, .pl:before, .pl:after {
+	animation-duration: 2s;
+	animation-timing-function: linear;
+	animation-iteration-count: infinite;
+}
+.pl {
+	margin: 1em auto 1.5em auto;
+	position: absolute;
+	width: 2em;
+	height: 2em;
+}
+.pl:before, .pl:after {
+	background: #4B9CD3;
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 50%;
+	transform-origin: 50% 100%;	
+	clip-path: polygon(0 0,100% 0,50% 100%);
+	-webkit-clip-path: polygon(0 0,100% 0,50% 100%);
+}
+
+/* Butterfly */
+.pl-butterfly {
+	animation-name: butterflyA;
+}
+.pl-butterfly:before {
+	animation-name: butterflyB;
+}
+.pl-butterfly:after {
+	animation-name: butterflyC;
+}
+@keyframes butterflyA {
+	from, to { transform: translateY(0) }
+	50% { transform: translateY(25%) }
+}
+@keyframes butterflyB {
+	from, 50%, to { transform: rotate(60deg) }
+	25%, 75% { transform: rotate(120deg) }
+}
+@keyframes butterflyC {
+	from, 50%, to { transform: rotate(300deg) }
+	25%, 75% { transform: rotate(240deg) }
+}
+
+#pointer{
+  top: 200px;
+  left: 200px;
+  z-index: 10;
 }

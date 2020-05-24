@@ -32,7 +32,7 @@ window.ui = {
       this.readyToCollect = true;
       this.showInfo(
         "<h3>Let's start! 🙂</h3>" +
-          'Collect data points by moving your mouse over the screen, following the cursor with your eyes and hitting the space key repeatedly 👀',
+          'Collect data points by following the "butterfly" with your eyes and hitting the space key repeatedly 👀',
         true,
       );
     }
@@ -103,7 +103,7 @@ window.ui = {
       this.state = 'trained_thrice';
       this.showInfo(
         '<h3>Have fun!</h3>' +
-          'Check out more of my stuff at <a href="https://cpury.github.io/" target="_blank">cpury.github.io</a> 😄',
+          'Check out the source code at <a href="https://github.com/mapy1874/lookie-lookie" target="_blank">github.com/mapy1874/lookie-lookie</a> 😄',
       );
     }
   },
