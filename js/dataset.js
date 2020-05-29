@@ -11,6 +11,8 @@ window.dataset = {
     x: null,
     y: null,
   },
+  // stack is for recording if the ith element is in train or val
+  stack: [],
 
   getImage: function() {
     // Capture the current image in the eyes canvas as a tensor.
@@ -104,7 +106,8 @@ window.dataset = {
   addToDataset: function(image, metaInfos, target, key) {
     // Add the given x, y to either 'train' or 'val'.
     const set = dataset[key];
-
+    // memorize whether this one is in train or validation
+    this.stack.push(key);
     if (set.x == null) {
       set.x = [tf.keep(image), tf.keep(metaInfos)];
       set.y = tf.keep(target);
@@ -146,13 +149,46 @@ window.dataset = {
     }
   },
 
+  /*
+  * delete the very last data added intot the 
+  */
+  deleteExample: function(){
+    // get whether the last example is in train or validation set
+    if (this.stack.length == 0) {
+      return;
+    } else {
+      const lastSet = this.stack.pop();
+      const set = dataset[lastSet];  
+      reducedSize = set.n-1
+      // delete x (image, eyePos)
+      let [newImages, deletedImage] = tf.split(set.x[0],[reducedSize,1], 0);
+      set.x[0] = tf.keep(newImages)
+      let [newEyePos, deletedEyePos] = tf.split(set.x[1],[reducedSize,1],0);
+      set.x[1] = tf.keep(newEyePos);
+      tf.dispose(deletedImage,deletedEyePos, newImages, newEyePos);
+
+      // delete the y
+      let [newY, deletedY] = tf.split(set.y,[reducedSize,1],0);
+      set.y = tf.keep(newY);
+      tf.dispose(deletedImage,deletedEyePos, newImages, newEyePos,newY,deletedY);
+
+      // update the n and UI
+      set.n -= 1
+      ui.onDeleteExample(dataset.train.n, dataset.val.n);
+      
+      // if no more example, set the x,y to null
+      if (set.n == 0){
+        set.x = null;
+        set.y = null;
+      }
+    }
+  },
   captureExample: function() {
     // Take the latest image from the eyes canvas and add it to our dataset.
     // Takes the coordinates of the mouse.
     tf.tidy(function() {
       const img = dataset.getImage();
       const positions = calibration.getCurPosition();
-      console.log(`mousePos: ${positions}`);
       const metaInfos = tf.keep(dataset.getMetaInfos());
       dataset.addExample(img, metaInfos, positions);
       calibration.moveCalibration();

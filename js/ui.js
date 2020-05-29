@@ -32,7 +32,8 @@ window.ui = {
       this.readyToCollect = true;
       this.showInfo(
         "<h3>Let's start! 🙂</h3>" +
-          'Collect data points by following the "butterfly" with your eyes and hitting the space key repeatedly 👀',
+          '<ul><li>Collect data points by following the "butterfly" with your eyes and pressing left/right arrow 👀</li></br>' +
+          '<li>You can also delete previous data points one by one by hitting the space key</li></ul>',
         true,
       );
     }
@@ -68,6 +69,15 @@ window.ui = {
     if (nTrain > 0 && nVal > 0) {
       $('#store-data').prop('disabled', false);
     }
+  },
+
+  onDeleteExample: function(nTrain, nVal){
+    this.setContent('n-train', nTrain);
+    this.setContent('n-val', nVal);
+    this.showInfo(
+      '<h3>Delete successfully 👌</h3>' +
+        "You can continue deleting by pressing the space key<br> "
+    );
   },
 
   onFinishTraining: function() {

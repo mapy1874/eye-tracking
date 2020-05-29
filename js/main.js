@@ -11,7 +11,6 @@ $(document).ready(function() {
     training.getPrediction().then(prediction => {
       const left = prediction[0] * ($('body').width() - targetSize);
       const top = prediction[1] * ($('body').height() - targetSize);
-      console.log(`left:${left}, top: ${top}`);
       $target.css('left', left + 'px');
       $target.css('top', top + 'px');
     });
@@ -29,16 +28,38 @@ $(document).ready(function() {
     a.click();
   }
 
+  // initialize the pointers randomly
+  calibration.moveCalibration()
+
   // Map functions to keys and buttons:
-
-  $('body').keyup(function(e) {
-    // On space key:
-    if (e.keyCode === 32 && ui.readyToCollect) {
-      dataset.captureExample();
-
-      e.preventDefault();
-      return false;
+  $('body').keyup(function(event) {
+    if (!ui.readyToCollect) {
+      return;
     }
+
+
+    if (event.keyCode == 32){
+      // space key, delete the previous example
+      dataset.deleteExample();
+      event.preventDefault();
+    } else{
+      let key;
+      if (event.keyCode == 37) {
+        key = "left";
+      } else if (event.keyCode == 39){
+        key = "right";
+      }
+  
+      if (key == calibration.getProceedKey()) {
+        // user presses the correct key
+        dataset.captureExample();
+        event.preventDefault();
+        return false;
+      } else {
+        alert("please follow the instuction below the butterfly!")
+      }
+    }
+
   });
 
   $('#start-training').click(function(e) {

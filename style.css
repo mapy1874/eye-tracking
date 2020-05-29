@@ -77,7 +77,7 @@ a {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 24pt;
+  font-size: 20pt;
   background-color: lightgreen;
   padding: 1em;
   border-radius: 10px;
@@ -197,8 +197,19 @@ button {
 	25%, 75% { transform: rotate(240deg) }
 }
 
+.cell{
+  position: relative;
+}
+
 #pointer{
-  top: 200px;
-  left: 200px;
-  z-index: 10;
+  top: 50px;
+  left: 50px;
+  z-index: 100;
+  margin: 0 auto;
+}
+
+.verification{
+  position: absolute;
+  z-index: 100;
+  top: 30px;
 }
