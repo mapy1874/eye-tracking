@@ -56,7 +56,12 @@ $(document).ready(function() {
         event.preventDefault();
         return false;
       } else {
-        alert("please follow the instuction below the butterfly!")
+        // flash the text to alert the user
+        $('.verification').addClass('flash-verification');
+        setTimeout(function() {
+          $('.verification').removeClass('flash-verification');
+        }, 2000);
+    
       }
     }
 

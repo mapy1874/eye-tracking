@@ -150,7 +150,7 @@ window.dataset = {
   },
 
   /*
-  * delete the very last data added intot the 
+  * delete the very last data added into the dataset
   */
   deleteExample: function(){
     // get whether the last example is in train or validation set
@@ -183,6 +183,7 @@ window.dataset = {
       }
     }
   },
+  
   captureExample: function() {
     // Take the latest image from the eyes canvas and add it to our dataset.
     // Takes the coordinates of the mouse.

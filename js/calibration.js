@@ -8,10 +8,22 @@ class CalibrationPositions {
                         ];
     }
     next() {
-        // [width, height]
-        this.i = Math.floor(Math.random()*this.positions.length)
+        if (this.i == 0){
+            this.shuffle();
+        }
         let coord =  [this.positions[this.i][0]*0.9,this.positions[this.i][1]*0.9];
+        this.i = (this.i + 1)%this.positions.length;
         return coord;
+    }
+    shuffle(){
+        // shuffle the positions
+        for(let k = this.positions.length-1; k > 0; k--){
+            const j = Math.floor(Math.random() * k)
+            const temp = this.positions[k]
+            this.positions[k] = this.positions[j]
+            this.positions[j] = temp
+        }
+        console.log(this.positions);
     }
 }
 $(document).ready(() => {
@@ -36,6 +48,8 @@ $(document).ready(() => {
             position = this.iterator.next();
             const pointerWidth = $('#pointer').outerWidth();
             const pointerHeight = $('#pointer').outerHeight();
+            // clear the prompt till the butterfly arrive at the next position
+            $('.verification').html("");
 
             const $pointer = $('#pointer');
             const oldX = parseInt($pointer.css("left"),10);
@@ -55,11 +69,11 @@ $(document).ready(() => {
                     if (Math.random()>0.5){
                         proceedKey = "left";
                         $('.verification').
-                            html("press LEFT arrow <div><strong>&larr;</strong></div>");
+                            html("<div><strong>&larr;</strong></div>");
                     } else {
                         proceedKey = "right";
                         $('.verification').
-                            html("press RIGHT arrow <div><strong>&rarr;</strong></div>");
+                            html("<div><strong>&rarr;</strong></div>");
                     }
                     cancelAnimationFrame(id);
                 } else {
