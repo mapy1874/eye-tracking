@@ -20,7 +20,7 @@ body, html {
 }
 
 #target {
-  background-color: lightgreen;
+  background-color: lightgreen; 
   position: absolute;
   border-radius: 50%;
   height: 40px;

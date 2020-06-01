@@ -8,7 +8,7 @@ class CalibrationPositions {
                         ];
     }
     next() {
-        if (this.i == 0){
+        if (this.i == 0){   
             this.shuffle();
         }
         let coord =  [this.positions[this.i][0]*0.9,this.positions[this.i][1]*0.9];

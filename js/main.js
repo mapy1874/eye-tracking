@@ -14,7 +14,7 @@ $(document).ready(function() {
       $target.css('left', left + 'px');
       $target.css('top', top + 'px');
     });
-  }
+  }   
 
   setInterval(moveTarget, 100);
 
