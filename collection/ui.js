@@ -39,41 +39,41 @@ window.ui = {
     }
   },
 
-  onAddExample: function(nTrain, nVal) {
+  onAddExample: function(nTrain) {
     // Call this when an example is added.
-    this.nExamples = nTrain + nVal;
+    this.nExamples = nTrain;
     this.setContent('n-train', nTrain);
-    this.setContent('n-val', nVal);
-    if (nTrain >= 2) {
-      $('#start-training').prop('disabled', false);
-    }
-    if (this.state == 'collecting' && this.nExamples == 5) {
-      this.showInfo(
-        '<h3>Keep going!</h3>' +
-          'You need to collect at least 20 data points to start seeing results.',
-      );
-    }
-    if (this.state == 'collecting' && this.nExamples == 25) {
-      this.showInfo(
-        '<h3>Great job! 👌</h3>' +
-          "Now that you have a handful of examples, let's train the neural network!<br> " +
-          'Hit the training button in the top right corner!',
-      );
-    }
-    if (this.state == 'trained' && this.nExamples == 50) {
-      this.showInfo(
-        '<h3>Fantastic 👏</h3>' +
-          "You've collected lots of examples. Let's try training again!",
-      );
-    }
-    if (nTrain > 0 && nVal > 0) {
-      $('#store-data').prop('disabled', false);
-    }
+    // this.setContent('n-val', nVal);
+    // if (nTrain >= 2) {
+    //   $('#start-training').prop('disabled', false);
+    // }
+    // if (this.state == 'collecting' && this.nExamples == 5) {
+    //   this.showInfo(
+    //     '<h3>Keep going!</h3>' +
+    //       'You need to collect at least 20 data points to start seeing results.',
+    //   );
+    // }
+    // if (this.state == 'collecting' && this.nExamples == 25) {
+    //   this.showInfo(
+    //     '<h3>Great job! 👌</h3>' +
+    //       "Now that you have a handful of examples, let's train the neural network!<br> " +
+    //       'Hit the training button in the top right corner!',
+    //   );
+    // }
+    // if (this.state == 'trained' && this.nExamples == 50) {
+    //   this.showInfo(
+    //     '<h3>Fantastic 👏</h3>' +
+    //       "You've collected lots of examples. Let's try training again!",
+    //   );
+    // }
+    // if (nTrain > 0 && nVal > 0) {
+    //   $('#store-data').prop('disabled', false);
+    // }
   },
 
-  onDeleteExample: function(nTrain, nVal){
+  onDeleteExample: function(nTrain){
     this.setContent('n-train', nTrain);
-    this.setContent('n-val', nVal);
+    // this.setContent('n-val', nVal);
     this.showInfo(
       '<h3>Delete successfully 👌</h3>' +
         "You can continue deleting by pressing the space key<br> "

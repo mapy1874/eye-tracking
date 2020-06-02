@@ -6,13 +6,13 @@ window.dataset = {
     x: null,
     y: null,
   },
-  val: {
-    n: 0,
-    x: null,
-    y: null,
-  },
-  // stack is for recording if the ith element is in train or val
-  stack: [],
+  // val: {
+  //   n: 0,
+  //   x: null,
+  //   y: null,
+  // },
+  // // stack is for recording if the ith element is in train or val
+  // stack: [],
 
   getImage: function() {
     // Capture the current image in the eyes canvas as a tensor.
@@ -51,16 +51,16 @@ window.dataset = {
     });
   },
 
-  whichDataset: function() {
-    // Returns 'train' or 'val' depending on what makes sense / is random.
-    if (dataset.train.n == 0) {
-      return 'train';
-    }
-    if (dataset.val.n == 0) {
-      return 'val';
-    }
-    return Math.random() < 0.2 ? 'val' : 'train';
-  },
+  // whichDataset: function() {
+  //   // Returns 'train' or 'val' depending on what makes sense / is random.
+  //   if (dataset.train.n == 0) {
+  //     return 'train';
+  //   }
+  //   if (dataset.val.n == 0) {
+  //     return 'val';
+  //   }
+  //   return Math.random() < 0.2 ? 'val' : 'train';
+  // },
 
   rgbToGrayscale(imageArray, n, x, y) {
     // Given an rgb array and positions, returns a grayscale value.
@@ -107,7 +107,6 @@ window.dataset = {
     // Add the given x, y to either 'train' or 'val'.
     const set = dataset[key];
     // memorize whether this one is in train or validation
-    this.stack.push(key);
     if (set.x == null) {
       set.x = [tf.keep(image), tf.keep(metaInfos)];
       set.y = tf.keep(target);
@@ -136,13 +135,13 @@ window.dataset = {
         return tf.tensor1d(target).expandDims(0);
       }),
     );
-    const key = dataset.whichDataset();
+    const key = "train";
 
     const convertedImage = await dataset.convertImage(image);
 
     dataset.addToDataset(convertedImage, metaInfos, target, key);
 
-    ui.onAddExample(dataset.train.n, dataset.val.n);
+    ui.onAddExample(dataset.train.n);
 
     if (!dontDispose) {
       tf.dispose(image, metaInfos);
@@ -154,11 +153,10 @@ window.dataset = {
   */
   deleteExample: function(){
     // get whether the last example is in train or validation set
-    if (this.stack.length == 0) {
+    if (this.train.n == 0) {
       return;
     } else {
-      const lastSet = this.stack.pop();
-      const set = dataset[lastSet];  
+      const set = dataset["train"];  
       reducedSize = set.n-1
       // delete x (image, eyePos)
       let [newImages, deletedImage] = tf.split(set.x[0],[reducedSize,1], 0);
@@ -174,7 +172,7 @@ window.dataset = {
 
       // update the n and UI
       set.n -= 1
-      ui.onDeleteExample(dataset.train.n, dataset.val.n);
+      ui.onDeleteExample(dataset.train.n);
       
       // if no more example, set the x,y to null
       if (set.n == 0){
@@ -217,20 +215,7 @@ window.dataset = {
           tensorToArray(dataset.train.x[1]),
         ],
         y: tensorToArray(dataset.train.y),
-      },
-      val: {
-        shapes: {
-          x0: dataset.val.x[0].shape,
-          x1: dataset.val.x[1].shape,
-          y: dataset.val.y.shape,
-        },
-        n: dataset.val.n,
-        x: dataset.val.x && [
-          tensorToArray(dataset.val.x[0]),
-          tensorToArray(dataset.val.x[1]),
-        ],
-        y: tensorToArray(dataset.val.y),
-      },
+      }
     };
   },
 
@@ -243,13 +228,6 @@ window.dataset = {
       tf.tensor(data.train.x[1], data.train.shapes.x1),
     ];
     dataset.train.y = tf.tensor(data.train.y, data.train.shapes.y);
-    dataset.val.n = data.val.n;
-    dataset.val.x = data.val.x && [
-      tf.tensor(data.val.x[0], data.val.shapes.x0),
-      tf.tensor(data.val.x[1], data.val.shapes.x1),
-    ];
-    dataset.val.y = tf.tensor(data.val.y, data.val.shapes.y);
-
-    ui.onAddExample(dataset.train.n, dataset.val.n);
+    ui.onAddExample(dataset.train.n);
   },
 };

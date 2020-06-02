@@ -14,13 +14,6 @@
 </head>
 
 <body>
-  <!--[if lte IE 9]>
-  <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
-  <![endif]-->
-
-  <canvas id="heatMap"></canvas>
-
-
   <div id="info" data-content="info">
     <h3>Hi there! 😃</h3>
     This is Lookie Lookie.<br>
@@ -30,36 +23,12 @@
   <div id="training">
     <table>
       <tr>
-        <td>Training examples</td>
+        <td>Collected examples</td>
         <td data-content="n-train">0</td>
-      </tr>
-      <tr>
-        <td>Validation examples</td>
-        <td data-content="n-val">0</td>
-      </tr>
-      <tr>
-        <td>Epochs trained</td>
-        <td data-content="n-epochs">0</td>
-      </tr>
-      <tr>
-        <td>Training loss</td>
-        <td data-content="train-loss">?</td>
-      </tr>
-      <tr>
-        <td>Validation loss</td>
-        <td data-content="val-loss">?</td>
       </tr>
     </table>
 
     <div class="buttonwrap">
-      <div class="buttonrow">
-        <button id="start-training" disabled>Start Training</button>
-        <button id="reset-model" disabled>Reset Model</button>
-      </div>
-      <div class="buttonrow">
-        <button id="draw-heatmap" disabled>Draw Heatmap</button>
-        <button id="clear-heatmap" disabled>Clear Heatmap</button>
-      </div>
       <div class="buttonrow">
         <button id="store-data" disabled>Save Dataset</button>
         <button id="load-data">Load Dataset</button>
@@ -85,7 +54,7 @@
 
 
   <footer>
-    Created with TensorFlow.js by Max Schumacher. Revised by Patrick Ma.
+    Thank you for providing data points for our research in helping physically challenged people!
     <a href="https://github.com/mapy1874/lookie-lookie" target="_blank" alt="Source">Source</a>
   </footer>
 

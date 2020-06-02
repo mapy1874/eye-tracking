@@ -20,7 +20,6 @@ class CalibrationPositions {
         }
         let coord =  [this.positions[this.i][0]*0.9,this.positions[this.i][1]*0.9];
         this.i = (this.i + 1)%this.positions.length;
-        console.log(coord);
         return coord;
     }
     shuffle(){
