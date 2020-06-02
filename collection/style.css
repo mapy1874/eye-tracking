@@ -1,0 +1,231 @@
+body, html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Roboto', sans-serif;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+#webcam, #overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+
+#eyes {
+  position: absolute;
+  top: 0;
+  left: 400px;
+}
+
+#target {
+  background-color: lightgreen; 
+  position: absolute;
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
+  transition: all 0.1s ease;
+  box-shadow: 0 0 20px 10px white;
+  border: 4px solid rgba(0,0,0,0.5);
+  opacity: 0;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  background-color: lightblue;
+  color: #ebf2fa;
+  font-size: 16pt;
+  padding: 0.5em;
+}
+
+a {
+  color: inherit;
+}
+
+@-webkit-keyframes flash {
+  from,
+  50%,
+  to {
+    opacity: 1;
+  }
+
+  25%,
+  75% {
+    opacity: 0;
+  }
+}
+
+@keyframes flash {
+  from,
+  50%,
+  to {
+    opacity: 1;
+  }
+
+  25%,
+  75% {
+    opacity: 0;
+  }
+}
+
+#info {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 20pt;
+  background-color: lightgreen;
+  padding: 1em;
+  border-radius: 10px;
+  max-width: 500px;
+  transition: all 1s;
+  -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+
+#info h3 {
+  margin: 0.2em 0;
+}
+
+#info.flash {
+  -webkit-animation-name: flash;
+  animation-name: flash;
+}
+
+#training {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 400px;
+  background-color: lightblue;
+  padding: 0.5em;
+}
+
+#training table {
+  width: 100%;
+  font-size: 16pt;
+  font-family: 'Source Code Pro', monospace;
+}
+
+#training table td:nth-child(2) {
+  text-align: right;
+}
+
+.buttonwrap {
+  text-align: center;
+}
+
+button {
+  position: relative;
+  z-index: 11;
+  cursor: pointer;
+  font-size: 10pt;
+  padding: 0.125em 0em;
+  margin: 0.1em;
+  width: 140px;
+  font-family: 'Source Code Pro', monospace;
+}
+
+#heatMap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 10;
+  pointer-events: none;
+}
+
+#data-uploader, #model-uploader {
+  display: none;
+}
+
+
+
+/** For adding the butterfly **/
+.pl, .pl:before, .pl:after {
+	animation-duration: 2s;
+	animation-timing-function: linear;
+	animation-iteration-count: infinite;
+}
+.pl {
+	margin: 1em auto 1.5em auto;
+	position: absolute;
+	width: 2em;
+	height: 2em;
+}
+.pl:before, .pl:after {
+	background: #4B9CD3;
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 50%;
+	transform-origin: 50% 100%;	
+	clip-path: polygon(0 0,100% 0,50% 100%);
+	-webkit-clip-path: polygon(0 0,100% 0,50% 100%);
+}
+
+/* Butterfly */
+.pl-butterfly {
+	animation-name: butterflyA;
+}
+.pl-butterfly:before {
+	animation-name: butterflyB;
+}
+.pl-butterfly:after {
+	animation-name: butterflyC;
+}
+@keyframes butterflyA {
+	from, to { transform: translateY(0) }
+	50% { transform: translateY(25%) }
+}
+@keyframes butterflyB {
+	from, 50%, to { transform: rotate(60deg) }
+	25%, 75% { transform: rotate(120deg) }
+}
+@keyframes butterflyC {
+	from, 50%, to { transform: rotate(300deg) }
+	25%, 75% { transform: rotate(240deg) }
+}
+
+.cell{
+  position: relative;
+}
+
+#pointer{
+  top: 50px;
+  left: 50px;
+  z-index: 100;
+  margin: 0 auto;
+}
+
+.verification{
+  position: absolute;
+  z-index: 100;
+  top: 30px;
+  font-size: 3em;
+}
+
+/* for alerting the user that he/she presses the wrong key */
+.flash-verification {
+  animation-name: flash-verification;
+   animation-duration: 0.2s;
+   animation-timing-function: linear;
+   animation-iteration-count: infinite;
+   animation-direction: alternate;
+   animation-play-state: running;
+}
+
+@keyframes flash-verification {
+   from {color: red;}
+   to {color: black;}
+}
