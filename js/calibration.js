@@ -23,7 +23,6 @@ class CalibrationPositions {
             this.positions[k] = this.positions[j]
             this.positions[j] = temp
         }
-        console.log(this.positions);
     }
 }
 $(document).ready(() => {
@@ -70,7 +69,7 @@ $(document).ready(() => {
                         proceedKey = "left";
                         $('.verification').
                             html("<div><strong>&larr;</strong></div>");
-                    } else {
+                    } else { 
                         proceedKey = "right";
                         $('.verification').
                             html("<div><strong>&rarr;</strong></div>");
