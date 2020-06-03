@@ -146,8 +146,8 @@ window.dataset = {
         body: JSON.stringify(data) // body data type must match "Content-Type" header
       });
       console.log("post response", response);
-      const data  = await response.json()
-      console.log("post data", data);  // parses JSON response into native JavaScript objects  
+      const responseData  = await response.json()
+      console.log("post data", responseData);  // parses JSON response into native JavaScript objects  
     }
   },
   
