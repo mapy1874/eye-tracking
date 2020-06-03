@@ -6,24 +6,16 @@ window.dataset = {
     x: null,
     y: null,
   },
-  // val: {
-  //   n: 0,
-  //   x: null,
-  //   y: null,
-  // },
-  // // stack is for recording if the ith element is in train or val
-  // stack: [],
 
   getImage: function() {
     // Capture the current image in the eyes canvas as a tensor.
-    return tf.tidy(function() {
-      const image = tf.browser.fromPixels(document.getElementById('eyes'));
-      const batchedImage = image.expandDims(0);
-      return batchedImage
-        .toFloat()
-        .div(tf.scalar(127))
-        .sub(tf.scalar(1));
-    });
+    const eyesCanvas = document.getElementById('eyes');
+    const ctx = eyesCanvas.getContext('2d');
+    const image = ctx.getImageData(0,0,eyesCanvas.width,eyesCanvas.height);
+
+    // viz the last collected image
+    document.getElementById("lastImage").getContext("2d").putImageData(image,0,0);
+    return image;
   },
 
   getMetaInfos: function(mirror) {
@@ -46,106 +38,33 @@ window.dataset = {
       x = 1 - x;
       y = 1 - y;
     }
-    return tf.tidy(function() {
-      return tf.tensor1d([x, y, rectWidth, rectHeight]).expandDims(0);
-    });
-  },
-
-  // whichDataset: function() {
-  //   // Returns 'train' or 'val' depending on what makes sense / is random.
-  //   if (dataset.train.n == 0) {
-  //     return 'train';
-  //   }
-  //   if (dataset.val.n == 0) {
-  //     return 'val';
-  //   }
-  //   return Math.random() < 0.2 ? 'val' : 'train';
-  // },
-
-  rgbToGrayscale(imageArray, n, x, y) {
-    // Given an rgb array and positions, returns a grayscale value.
-    // Inspired by http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0029740
-    let r = (imageArray[n][x][y][0] + 1) / 2;
-    let g = (imageArray[n][x][y][1] + 1) / 2;
-    let b = (imageArray[n][x][y][2] + 1) / 2;
-
-    // Gamma correction:
-    const exponent = 1 / 2.2;
-    r = Math.pow(r, exponent);
-    g = Math.pow(g, exponent);
-    b = Math.pow(b, exponent);
-
-    // Gleam:
-    const gleam = (r + g + b) / 3;
-    return gleam * 2 - 1;
-  },
-
-  convertImage: async function(image) {
-    // Convert to grayscale and add spatial info
-    const imageShape = image.shape;
-    const imageArray = await image.array();
-    const w = imageShape[1];
-    const h = imageShape[2];
-
-    const data = [new Array(w)];
-    const promises = [];
-    for (let x = 0; x < w; x++) {
-      data[0][x] = new Array(h);
-
-      for (let y = 0; y < h; y++) {
-        const grayValue = dataset.rgbToGrayscale(imageArray, 0, x, y);
-        data[0][x][y] = [grayValue, (x / w) * 2 - 1, (y / h) * 2 - 1];
-      }
-    }
-
-    await Promise.all(promises);
-
-    return tf.tensor(data);
+    return [x, y, rectWidth, rectHeight];
   },
 
   addToDataset: function(image, metaInfos, target, key) {
-    // Add the given x, y to either 'train' or 'val'.
     const set = dataset[key];
     // memorize whether this one is in train or validation
     if (set.x == null) {
-      set.x = [tf.keep(image), tf.keep(metaInfos)];
-      set.y = tf.keep(target);
+      set.x = [[image], [metaInfos]];
+      set.y = [target];
     } else {
-      const oldImage = set.x[0];
-      set.x[0] = tf.keep(oldImage.concat(image, 0));
-
-      const oldEyePos = set.x[1];
-      set.x[1] = tf.keep(oldEyePos.concat(metaInfos, 0));
-
-      const oldY = set.y;
-      set.y = tf.keep(oldY.concat(target, 0));
-
-      tf.dispose([oldImage, oldEyePos, oldY, target]);
+      set.x[0].push(image);
+      set.x[1].push(metaInfos);
+      set.y.push(target)
     }
-
     set.n += 1;
+    console.log(set.x);
   },
 
-  addExample: async function(image, metaInfos, target, dontDispose) {
+  addExample: async function(image, metaInfos, target) {
     // Given an image, eye pos and target coordinates, adds them to our dataset.
     target[0] = target[0] - 0.5;
     target[1] = target[1] - 0.5;
-    target = tf.keep(
-      tf.tidy(function() {
-        return tf.tensor1d(target).expandDims(0);
-      }),
-    );
     const key = "train";
 
-    const convertedImage = await dataset.convertImage(image);
-
-    dataset.addToDataset(convertedImage, metaInfos, target, key);
+    dataset.addToDataset(image, metaInfos, target, key);
 
     ui.onAddExample(dataset.train.n);
-
-    if (!dontDispose) {
-      tf.dispose(image, metaInfos);
-    }
   },
 
   /*
@@ -157,18 +76,10 @@ window.dataset = {
       return;
     } else {
       const set = dataset["train"];  
-      reducedSize = set.n-1
-      // delete x (image, eyePos)
-      let [newImages, deletedImage] = tf.split(set.x[0],[reducedSize,1], 0);
-      set.x[0] = tf.keep(newImages)
-      let [newEyePos, deletedEyePos] = tf.split(set.x[1],[reducedSize,1],0);
-      set.x[1] = tf.keep(newEyePos);
-      tf.dispose(deletedImage,deletedEyePos, newImages, newEyePos);
-
-      // delete the y
-      let [newY, deletedY] = tf.split(set.y,[reducedSize,1],0);
-      set.y = tf.keep(newY);
-      tf.dispose(deletedImage,deletedEyePos, newImages, newEyePos,newY,deletedY);
+      set.x[0].pop();
+      set.x[1].pop();
+      set.y.pop();
+      console.log(set.y);
 
       // update the n and UI
       set.n -= 1
@@ -185,13 +96,11 @@ window.dataset = {
   captureExample: function() {
     // Take the latest image from the eyes canvas and add it to our dataset.
     // Takes the coordinates of the mouse.
-    tf.tidy(function() {
-      const img = dataset.getImage();
-      const positions = calibration.getCurPosition();
-      const metaInfos = tf.keep(dataset.getMetaInfos());
-      dataset.addExample(img, metaInfos, positions);
-      calibration.moveCalibration();
-    });
+    const img = dataset.getImage();
+    const positions = calibration.getCurPosition();
+    const metaInfos = dataset.getMetaInfos();
+    dataset.addExample(img, metaInfos, positions);
+    calibration.moveCalibration();
   },
 
   toJSON: function() {

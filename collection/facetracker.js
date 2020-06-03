@@ -127,8 +127,6 @@ $(document).ready(function() {
         facetracker.videoWidthInternal / facetracker.videoWidthExternal;
       const resizeFactorY =
         facetracker.videoHeightInternal / facetracker.videoHeightExternal;
-      console.log(eyesCanvas.width);
-      console.log(resizeFactorX)
       facetracker.overlayCC.strokeStyle = 'red';
       facetracker.overlayCC.strokeRect(rect[0], rect[1], rect[2], rect[3]);
       eyesCtx.drawImage(
@@ -165,8 +163,7 @@ $(document).ready(function() {
     );
   } else {
     ui.showInfo(
-      'Your browser does not seem to support getUserMedia. 😭 This will probably only work in Chrome or Firefox.'+
-      'If you are using Chrome, please make sure https:// is added before patrickma.me',
+      'Your browser does not seem to support getUserMedia. 😭 This will probably only work in Chrome or Firefox. If you are using Chrome, please make sure https:// is added before patrickma.me',
       true,
     );
   }

@@ -132,16 +132,6 @@ button {
   font-family: 'Source Code Pro', monospace;
 }
 
-#heatMap {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  z-index: 10;
-  pointer-events: none;
-}
-
 #data-uploader, #model-uploader {
   display: none;
 }

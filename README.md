@@ -11,7 +11,7 @@ Open index.html in a modern browser like Chrome or Firefox. A tutorial will
 guide you through it.
 
 ## Dataset
-We collect data from users [here](http://patrickma.me/eye-tracking/collection/collection.html). The data is collected in the following format:
+We collect data from users [here](https://patrickma.me/eye-tracking/collection/collection.html). The data is collected in the following format:
 
 1. User's eye image, 25\*50\*3
 
