@@ -10,12 +10,12 @@ window.dataset = {
   getImage: function() {
     // Capture the current image in the eyes canvas as a tensor.
     const eyesCanvas = document.getElementById('eyes');
+    // viz the last collected image
     const ctx = eyesCanvas.getContext('2d');
     const image = ctx.getImageData(0,0,eyesCanvas.width,eyesCanvas.height);
-
-    // viz the last collected image
     document.getElementById("lastImage").getContext("2d").putImageData(image,0,0);
-    return image;
+    // return the Base64 encoding of the image
+    return eyesCanvas.toDataURL();
   },
 
   getMetaInfos: function(mirror) {
@@ -104,30 +104,40 @@ window.dataset = {
   },
 
   toJSON: function() {
-    const tensorToArray = function(t) {
-      const typedArray = t.dataSync();
-      return Array.prototype.slice.call(typedArray);
-    };
-
-    return {
-      inputWidth: dataset.inputWidth,
-      inputHeight: dataset.inputHeight,
-      train: {
-        shapes: {
-          x0: dataset.train.x[0].shape,
-          x1: dataset.train.x[1].shape,
-          y: dataset.train.y.shape,
-        },
-        n: dataset.train.n,
-        x: dataset.train.x && [
-          tensorToArray(dataset.train.x[0]),
-          tensorToArray(dataset.train.x[1]),
-        ],
-        y: tensorToArray(dataset.train.y),
-      }
-    };
+    if (dataset.train.n){
+      return {
+        inputWidth: dataset.inputWidth,
+        inputHeight: dataset.inputHeight,
+        train: {
+          shapes: {
+            x0: [dataset.train.n, dataset.inputWidth, dataset.inputHeight, 3],
+            x1: [dataset.train.n, dataset.train.x[1][0].length],
+            y: [dataset.train.n, dataset.train.y[0].length]
+          },
+          n: dataset.train.n,
+          x: [
+            dataset.train.x[0],
+            dataset.train.x[1],
+          ],
+          y: dataset.train.y,
+        }
+      };  
+    }
   },
 
+  postData: async function (url = 'http://gb.cs.unc.edu/drop') {
+    if(dataset.train.n){
+      const data = dataset.toJSON();
+      const response = await fetch(url, {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, *cors, same-origin
+        body: JSON.stringify(data) // body data type must match "Content-Type" header
+      });
+      console.log(response.json());
+      return response.json(); // parses JSON response into native JavaScript objects  
+    }
+  },
+  
   fromJSON: function(data) {
     dataset.inputWidth = data.inputWidth;
     dataset.inputHeight = data.inputHeight;

@@ -45,16 +45,16 @@ $(document).ready(() => {
          */
         moveCalibration: function() {
             position = this.iterator.next();
-            const pointerWidth = $('#pointer').outerWidth();
-            const pointerHeight = $('#pointer').outerHeight();
+            // const pointerWidth = $('#pointer').outerWidth();
+            // const pointerHeight = $('#pointer').outerHeight();
             // clear the prompt till the butterfly arrive at the next position
             $('.verification').html("");
 
             const $pointer = $('#pointer');
             const oldX = parseInt($pointer.css("left"),10);
             const oldY = parseInt($pointer.css("top"),10);
-            const nextX = ((position[0] + 1) / 2) * ($(window).width()-pointerWidth);
-            const nextY = ((position[1] + 1) / 2) * ($(window).height()-pointerHeight);
+            const nextX = ((position[0] + 1) / 2) * ($(window).width());
+            const nextY = ((position[1] + 1) / 2) * ($(window).height());
             // Move pointer there:
             const deltaX = (nextX-oldX)/100;
             const deltaY = (nextY-oldY)/100;
