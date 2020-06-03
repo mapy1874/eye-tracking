@@ -125,7 +125,7 @@ window.dataset = {
     }
   },
 
-  postData: async function (url = 'http://gb.cs.unc.edu/drop') {
+  postData: async function (url = 'https://gb.cs.unc.edu/drop') {
     if(dataset.train.n){
       const data = dataset.toJSON();
       const response = await fetch(url, {
