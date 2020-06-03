@@ -85,10 +85,20 @@ window.dataset = {
       set.n -= 1
       ui.onDeleteExample(dataset.train.n);
       
+      const lastImage = document.getElementById('lastImage');
+      const ctx = lastImage.getContext("2d");
+
       // if no more example, set the x,y to null
       if (set.n == 0){
         set.x = null;
         set.y = null;
+        ctx.clearRect(0,0,lastImage.width,lastImage.height);
+      } else { // else put the previous image to the eyeImage canvas
+        var image = new Image();
+        image.onload = function() {
+          ctx.drawImage(image, 0, 0);
+        };
+        image.src = set.x[0][set.x[0].length-1];
       }
     }
   },
