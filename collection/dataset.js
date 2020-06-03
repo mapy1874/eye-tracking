@@ -85,7 +85,7 @@ window.dataset = {
       set.n -= 1
       ui.onDeleteExample(dataset.train.n);
       
-      const lastImage = document.getElementById('lastImage');
+      const lastImage = document.getElementById('laerstImage');
       const ctx = lastImage.getContext("2d");
 
       // if no more example, set the x,y to null
@@ -135,16 +135,19 @@ window.dataset = {
     }
   },
 
-  postData: async function (url = 'https://gb.cs.unc.edu/drop') {
+  postData: async function (url = 'https://gb.cs.unc.edu/json/drop') {
     if(dataset.train.n){
       const data = dataset.toJSON();
       const response = await fetch(url, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        mode: 'no-cors', // no-cors, *cors, same-origin
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify(data) // body data type must match "Content-Type" header
       });
-      console.log(response.json());
-      return response.json(); // parses JSON response into native JavaScript objects  
+      console.log("post response", response);
+      const data  = await response.json()
+      console.log("post data", data);  // parses JSON response into native JavaScript objects  
     }
   },
   
