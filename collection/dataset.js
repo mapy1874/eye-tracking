@@ -125,12 +125,12 @@ window.dataset = {
     }
   },
 
-  postData: async function (url = 'https://gb.cs.unc.edu/drop') {
+  postData: async function (url = 'http://gb.cs.unc.edu/drop') {
     if(dataset.train.n){
       const data = dataset.toJSON();
       const response = await fetch(url, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        mode: 'cors', // no-cors, *cors, same-origin
+        mode: 'no-cors', // no-cors, *cors, same-origin
         body: JSON.stringify(data) // body data type must match "Content-Type" header
       });
       console.log(response.json());
