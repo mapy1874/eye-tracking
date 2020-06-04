@@ -1,6 +1,7 @@
 window.dataset = {
   inputWidth: $('#eyes').width(),
   inputHeight: $('#eyes').height(),
+  posted: false, // for recording whether the data has been posted
   train: {
     n: 0,
     x: null,

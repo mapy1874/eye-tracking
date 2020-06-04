@@ -50,7 +50,7 @@ $(document).ready(function() {
         key = "right";
       }
   
-      if (key == calibration.getProceedKey()) {
+      if (key == calibration.getProceedKey()&&!dataset.posted) {
         // user presses the correct key
         dataset.captureExample();
         event.preventDefault();
@@ -70,7 +70,10 @@ $(document).ready(function() {
   $('#post-data').click(function(e) {
     if(!dataset.posted){
       // avoid posting multiply times
+      dataset.posted = true;
       dataset.postData();
+    }else{
+      ui.onPostedData();
     }
   });
 });
