@@ -47,11 +47,11 @@ $(document).ready(function() {
 
       facetracker.video.onresize = function() {
         facetracker.adjustVideoProportions();
-        if (facetracker.trackingStarted) {
-          facetracker.ctrack.stop();
-          facetracker.ctrack.reset();
-          facetracker.ctrack.start(facetracker.video);
-        }
+        // if (facetracker.trackingStarted) {
+        //   facetracker.ctrack.stop();
+        //   facetracker.ctrack.reset();
+        //   facetracker.ctrack.start(facetracker.video);
+        // }
       };
     },
 
@@ -63,60 +63,61 @@ $(document).ready(function() {
     },
 
     startVideo: function() {
-      // start video
-      facetracker.video.play();
-      // start tracking
-      facetracker.ctrack.start(facetracker.video);
-      facetracker.trackingStarted = true;
-      // start loop to draw face
-      facetracker.positionLoop();
-    },
-
-    positionLoop: function() {
-      // Check if a face is detected, and if so, track it.
-      requestAnimationFrame(facetracker.positionLoop);
-      facetracker.currentPosition = facetracker.ctrack.getCurrentPosition();
-      facetracker.overlayCC.clearRect(
-        0,
-        0,
-        facetracker.videoWidthExternal,
-        facetracker.videoHeightExternal,
-      );
-      if (facetracker.currentPosition) {
-        facetracker.trackFace(facetracker.currentPosition);
-        facetracker.ctrack.draw(facetracker.overlay);
-        ui.onFoundFace();
+      // navigator.mediaDevices.getUserMedia(
+      //   {video: true}
+      // ).then(stream => facetracker.video.srcObject = stream);
+      if (navigator.mediaDevices) {
+        navigator.mediaDevices
+          .getUserMedia({
+            video: true,
+          })
+          .then(facetracker.gumSuccess)
+          .catch(facetracker.gumFail);
+      } else if (navigator.getUserMedia) {
+        navigator.getUserMedia(
+          {
+            video: true,
+          },
+          facetracker.gumSuccess,
+          facetracker.gumFail,
+        );
+      } else {
+        ui.showInfo(
+          'Your browser does not seem to support getUserMedia. 😭 This will probably only work in Chrome or Firefox. If you are using Chrome, please make sure https:// is added before patrickma.me',
+          true,
+        );
       }
+    
     },
 
-    getEyesRect: function(position) {
+    getEyesRect: function(leftEyePosition, rightEyePosition) {
       // Given a tracked face, returns a rectangle surrounding the eyes.
-      const minX = position[19][0] + 3;
-      const maxX = position[15][0] - 3;
+      const minX = leftEyePosition[0]._x-15;
+      const maxX = rightEyePosition[3]._x+15;
       const minY =
         Math.min(
-          position[20][1],
-          position[21][1],
-          position[17][1],
-          position[16][1],
-        ) + 6;
+          leftEyePosition[1]._y,
+          leftEyePosition[2]._y,
+          rightEyePosition[1]._y,
+          rightEyePosition[2]._y,
+        )-2;
       const maxY =
         Math.max(
-          position[23][1],
-          position[26][1],
-          position[31][1],
-          position[28][1],
-        ) + 3;
+          leftEyePosition[4]._y,
+          leftEyePosition[5]._y,
+          rightEyePosition[4]._y,
+          rightEyePosition[5]._y,
+        )+2;
 
       const width = maxX - minX;
-      const height = maxY - minY - 5;
+      const height = maxY - minY;
 
       return [minX, minY, width, height * 1.25];
     },
 
-    trackFace: function(position) {
+    trackFace: function(leftEyePosition, rightEyePosition) {
       // Given a tracked face, crops out the eyes and draws them in the eyes canvas.
-      const rect = facetracker.getEyesRect(position);
+      const rect = facetracker.getEyesRect(leftEyePosition, rightEyePosition);
       facetracker.currentEyeRect = rect;
 
       const eyesCanvas = document.getElementById('eyes');
@@ -143,31 +144,29 @@ $(document).ready(function() {
     },
   };
 
-  video.addEventListener('canplay', facetracker.startVideo, false);
-
   // set up video
-  if (navigator.mediaDevices) {
-    navigator.mediaDevices
-      .getUserMedia({
-        video: true,
-      })
-      .then(facetracker.gumSuccess)
-      .catch(facetracker.gumFail);
-  } else if (navigator.getUserMedia) {
-    navigator.getUserMedia(
-      {
-        video: true,
-      },
-      facetracker.gumSuccess,
-      facetracker.gumFail,
-    );
-  } else {
-    ui.showInfo(
-      'Your browser does not seem to support getUserMedia. 😭 This will probably only work in Chrome or Firefox. If you are using Chrome, please make sure https:// is added before patrickma.me',
-      true,
-    );
-  }
+  Promise.all([
+    faceapi.nets.tinyFaceDetector.loadFromUri('./models'),
+    faceapi.nets.faceLandmark68TinyNet.loadFromUri('./models'),
+    faceapi.nets.faceRecognitionNet.loadFromUri('./models'),
+  ]).then(facetracker.startVideo)
+  
 
-  facetracker.ctrack = new clm.tracker();
-  facetracker.ctrack.init();
+  facetracker.video.addEventListener('play', () => {
+    const displaySize = { width: video.width, height: video.height };
+    faceapi.matchDimensions(overlay, displaySize);
+    setInterval(async () => {
+      try{
+        const useTinyModel =true;
+        const detections = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks(useTinyModel);
+        const resizedDetections = faceapi.resizeResults(detections, displaySize);
+        overlay.getContext('2d').clearRect(0, 0, overlay.width, overlay.height);
+        faceapi.draw.drawFaceLandmarks(overlay, resizedDetections);
+        ui.onFoundFace();
+        facetracker.trackFace(resizedDetections.landmarks.getLeftEye(),resizedDetections.landmarks.getRightEye());
+      }catch{
+      }
+    }, 200)
+  })      
+
 });

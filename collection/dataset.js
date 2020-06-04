@@ -85,7 +85,7 @@ window.dataset = {
       set.n -= 1
       ui.onDeleteExample(dataset.train.n);
       
-      const lastImage = document.getElementById('laerstImage');
+      const lastImage = document.getElementById('lastImage');
       const ctx = lastImage.getContext("2d");
 
       // if no more example, set the x,y to null

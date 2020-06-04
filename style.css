@@ -210,8 +210,8 @@ button {
 
 .verification{
   position: absolute;
+  top: 10px;
   z-index: 100;
-  top: 30px;
   font-size: 3em;
 }
 

@@ -201,7 +201,7 @@ button {
 .verification{
   position: absolute;
   z-index: 100;
-  top: 30px;
+  top: 10px;
   font-size: 3em;
 }
 
