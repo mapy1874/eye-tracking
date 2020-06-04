@@ -23,7 +23,7 @@ window.ui = {
 
   onWebcamEnabled: function() {
     this.state = 'finding face';
-    this.showInfo("Thanks! Now let's find your face! 🤨", true);
+    this.showInfo("Thanks! Now let's find your face! 🤨 <br>This may take a while", true);
   },
 
   onFoundFace: function() {

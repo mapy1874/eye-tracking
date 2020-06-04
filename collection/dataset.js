@@ -135,7 +135,7 @@ window.dataset = {
     }
   },
 
-  postData: async function (url = 'https://gb.cs.unc.edu/json/drop') {
+  postData: async function(url = 'https://gb.cs.unc.edu/json/drop') {
     if(dataset.train.n){
       const data = dataset.toJSON();
       const response = await fetch(url, {
@@ -148,6 +148,15 @@ window.dataset = {
       console.log("post response", response);
       const responseData  = await response.json()
       console.log("post data", responseData);  // parses JSON response into native JavaScript objects  
+    }
+  },
+
+  deleteData: async function(){
+    for(let i = 1; i++; i<23){
+      resp = await fetch("https://gb.cs.unc.edu/json/drop/"+i, {
+        method: "DELETE"
+      });
+      console.log("delete resp", resp);  
     }
   },
   

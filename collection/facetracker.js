@@ -10,7 +10,8 @@ $(document).ready(function() {
     videoHeightInternal: video.videoHeight,
     overlay: overlay,
     overlayCC: overlay.getContext('2d'),
-
+    currentLeftEye: null,
+    currentRightEye: null,
     trackingStarted: false,
     currentPosition: null,
     currentEyeRect: null,
@@ -115,10 +116,22 @@ $(document).ready(function() {
       return [minX, minY, width, height * 1.25];
     },
 
+    getEyePositions: function(eyePosition){
+      // convert a landmark to an array with length of 6
+      const res = [];
+      for(let i = 0; i < eyePosition.length; i++){
+        res.push([eyePosition[i]._x,eyePosition[i]._y]);
+      }      
+      return res;
+    },
+
     trackFace: function(leftEyePosition, rightEyePosition) {
       // Given a tracked face, crops out the eyes and draws them in the eyes canvas.
       const rect = facetracker.getEyesRect(leftEyePosition, rightEyePosition);
       facetracker.currentEyeRect = rect;
+
+      facetracker.currentLeftEye = facetracker.getEyePositions(leftEyePosition);
+      facetracker.currentRightEye = facetracker.getEyePositions(rightEyePosition);
 
       const eyesCanvas = document.getElementById('eyes');
       const eyesCtx = eyesCanvas.getContext('2d');
