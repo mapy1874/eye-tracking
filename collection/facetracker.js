@@ -88,7 +88,6 @@ $(document).ready(function() {
           true,
         );
       }
-    
     },
 
     getEyesRect: function(leftEyePosition, rightEyePosition) {
@@ -164,11 +163,14 @@ $(document).ready(function() {
     faceapi.nets.faceRecognitionNet.loadFromUri('./models'),
   ]).then(facetracker.startVideo)
   
+  const detectLandmarks = async () => {
+  };
 
   facetracker.video.addEventListener('play', () => {
     const displaySize = { width: video.width, height: video.height };
     faceapi.matchDimensions(overlay, displaySize);
-    setInterval(async () => {
+    requestAnimationFrame(detectLandmarks);
+    setInterval(async ()=>{
       try{
         const useTinyModel =true;
         const detections = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks(useTinyModel);
@@ -177,9 +179,10 @@ $(document).ready(function() {
         faceapi.draw.drawFaceLandmarks(overlay, resizedDetections);
         ui.onFoundFace();
         facetracker.trackFace(resizedDetections.landmarks.getLeftEye(),resizedDetections.landmarks.getRightEye());
+        requestAnimationFrame(detectLandmarks);
       }catch{
-      }
-    }, 200)
+      }  
+    },200);
   })      
 
 });

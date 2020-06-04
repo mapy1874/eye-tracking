@@ -37,7 +37,6 @@ window.dataset = {
       rightEye[i][0] = (rightEye[i][0]/facetracker.videoWidthExternal)*2-1;
       rightEye[i][1] = (rightEye[i][1]/facetracker.videoHeightExternal)*2-1;
     }
-    console.log( {leftEye:leftEye,rightEye:rightEye});
     return {leftEye:leftEye,rightEye:rightEye};
   },
 
