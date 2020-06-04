@@ -82,7 +82,6 @@ window.dataset = {
 
   convertImage: async function(image) {
     // Convert to grayscale and add spatial info
-    console.log(`image:${image}`);
     const imageShape = image.shape;
     const imageArray = await image.array();
     const w = imageShape[1];
@@ -100,7 +99,6 @@ window.dataset = {
     }
 
     await Promise.all(promises);
-    console.log(`data: ${data}`);
     return tf.tensor(data);
   },
 

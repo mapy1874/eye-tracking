@@ -95,8 +95,8 @@ window.ui = {
   onPostedData: function(){
     $('#post-data').prop('disabled', true);
     this.showInfo(
-      '<h3>Thank you for making the work a bit better!</h3>' +
-        'Check out a basic eye tracking website <a href="https://https://patrickma.me/eye-tracking" target="_blank">here</a> 😄',
+      '<h3>Thank you for making the world a bit better!</h3>' +
+        'Check out a basic eye tracking website <a href="https://patrickma.me/eye-tracking" target="_blank">here</a> 😄',
     );
   }
 };

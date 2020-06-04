@@ -45,7 +45,6 @@ $(document).ready(() => {
             const $pointer = $('#pointer');
             const X = (parseInt($pointer.css("left"),10)/$('body').width());
             const Y = (parseInt($pointer.css("top"),10)/$('body').height());
-            console.log(`${[X,Y]}`);
             return [X, Y];
         },
 

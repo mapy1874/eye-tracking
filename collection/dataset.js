@@ -24,22 +24,21 @@ window.dataset = {
     // - middle x, y of the eye rectangle, relative to video size
     // - size of eye rectangle, relative to video size
     // - angle of rectangle (TODO)
-    let x = facetracker.currentEyeRect[0] + facetracker.currentEyeRect[2] / 2;
-    let y = facetracker.currentEyeRect[1] + facetracker.currentEyeRect[3] / 2;
-
-    x = (x / facetracker.videoWidthExternal) * 2 - 1;
-    y = (y / facetracker.videoHeightExternal) * 2 - 1;
-
-    const rectWidth =
-      facetracker.currentEyeRect[2] / facetracker.videoWidthExternal;
-    const rectHeight =
-      facetracker.currentEyeRect[3] / facetracker.videoHeightExternal;
-
-    if (mirror) {
-      x = 1 - x;
-      y = 1 - y;
+    let leftEye = facetracker.currentLeftEye;
+    let rightEye = facetracker.currentRightEye;
+    
+    // normalize the pos of leftEye
+    for(let i = 0; i<leftEye.length; i++){
+      leftEye[i][0] = (leftEye[i][0]/facetracker.videoWidthExternal)*2-1;
+      leftEye[i][1] = (leftEye[i][1]/facetracker.videoHeightExternal)*2-1;
     }
-    return [x, y, rectWidth, rectHeight];
+
+    for(let i = 0; i<rightEye.length; i++){
+      rightEye[i][0] = (rightEye[i][0]/facetracker.videoWidthExternal)*2-1;
+      rightEye[i][1] = (rightEye[i][1]/facetracker.videoHeightExternal)*2-1;
+    }
+    console.log( {leftEye:leftEye,rightEye:rightEye});
+    return {leftEye:leftEye,rightEye:rightEye};
   },
 
   addToDataset: function(image, metaInfos, target, key) {
@@ -54,7 +53,6 @@ window.dataset = {
       set.y.push(target)
     }
     set.n += 1;
-    console.log(set.x);
   },
 
   addExample: async function(image, metaInfos, target) {
@@ -80,7 +78,6 @@ window.dataset = {
       set.x[0].pop();
       set.x[1].pop();
       set.y.pop();
-      console.log(set.y);
 
       // update the n and UI
       set.n -= 1
@@ -121,15 +118,14 @@ window.dataset = {
         inputHeight: dataset.inputHeight,
         train: {
           shapes: {
-            x0: [dataset.train.n, dataset.inputWidth, dataset.inputHeight, 3],
-            x1: [dataset.train.n, dataset.train.x[1][0].length],
+            image: [dataset.train.n, dataset.inputWidth, dataset.inputHeight, 3],
             y: [dataset.train.n, dataset.train.y[0].length]
           },
           n: dataset.train.n,
-          x: [
-            dataset.train.x[0],
-            dataset.train.x[1],
-          ],
+          x: {
+            eyeImage:dataset.train.x[0],
+            eyePositions:dataset.train.x[1],
+          },
           y: dataset.train.y,
         }
       };  
@@ -146,9 +142,6 @@ window.dataset = {
         },
         body: JSON.stringify(data) // body data type must match "Content-Type" header
       });
-      console.log("post response", response);
-      const responseData  = await response.json()
-      console.log("post data", responseData);  // parses JSON response into native JavaScript objects  
     }
   },
 
@@ -157,7 +150,6 @@ window.dataset = {
       resp = await fetch("https://gb.cs.unc.edu/json/drop/"+i, {
         method: "DELETE"
       });
-      console.log("delete resp", resp);  
     }
   },
   
