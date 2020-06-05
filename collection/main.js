@@ -72,6 +72,7 @@ $(document).ready(function() {
       // avoid posting multiply times
       dataset.posted = true;
       dataset.postData();
+      console.log("posted");
     }else{
       ui.onPostedData();
     }

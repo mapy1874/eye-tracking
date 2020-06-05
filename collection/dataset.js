@@ -133,7 +133,7 @@ window.dataset = {
 
   postData: async function(url = 'https://gb.cs.unc.edu/json/drop') {
     if(dataset.train.n){
-      const data = dataset.toJSON();
+      const data = await dataset.toJSON();
       const response = await fetch(url, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         headers: {
