@@ -35,7 +35,8 @@ class CalibrationPositions {
 }
 $(document).ready(() => {
     window.calibration = {
-        iterator : new CalibrationPositions(),
+        iterator: new CalibrationPositions(),
+        moving: true, // record whether the butterfly is moving
         proceedKey: "left", // record which key is required to proceed to next butterfly position
         /**
          * Get the calibration pointer's current percentage position
@@ -51,10 +52,11 @@ $(document).ready(() => {
         /**
          * Move the calibration pointer to the next available position
          */
-        moveCalibration: function() {
+        moveCalibration: async function() {
             position = this.iterator.next();
             // clear the prompt till the butterfly arrive at the next position
             $('.verification').html("");
+            calibration.moving = true;
 
             const $pointer = $('#pointer');
             const oldX = parseInt($pointer.css("left"),10);
@@ -81,6 +83,7 @@ $(document).ready(() => {
                             html("<div><strong>&rarr;</strong></div>");
                     }
                     cancelAnimationFrame(id);
+                    calibration.moving = false;
                 } else {
                   x+=deltaX;
                   y+=deltaY; 

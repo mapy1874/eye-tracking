@@ -67,6 +67,7 @@ $(document).ready(function() {
       // navigator.mediaDevices.getUserMedia(
       //   {video: true}
       // ).then(stream => facetracker.video.srcObject = stream);
+      console.log("start video")
       if (navigator.mediaDevices) {
         navigator.mediaDevices
           .getUserMedia({
@@ -163,14 +164,13 @@ $(document).ready(function() {
     faceapi.nets.faceRecognitionNet.loadFromUri('./models'),
   ]).then(facetracker.startVideo)
   
-  const detectLandmarks = async () => {
-  };
 
   facetracker.video.addEventListener('play', () => {
     const displaySize = { width: video.width, height: video.height };
     faceapi.matchDimensions(overlay, displaySize);
-    requestAnimationFrame(detectLandmarks);
-    setInterval(async ()=>{
+
+    let id = requestAnimationFrame(frame);
+    async function frame() {
       try{
         const useTinyModel =true;
         const detections = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks(useTinyModel);
@@ -179,10 +179,24 @@ $(document).ready(function() {
         faceapi.draw.drawFaceLandmarks(overlay, resizedDetections);
         ui.onFoundFace();
         facetracker.trackFace(resizedDetections.landmarks.getLeftEye(),resizedDetections.landmarks.getRightEye());
-        requestAnimationFrame(detectLandmarks);
+        requestAnimationFrame(frame);
       }catch{
-      }  
-    },200);
+        requestAnimationFrame(frame);
+      }
+    };
+    // setInterval(async ()=>{
+    //   try{
+    //     const useTinyModel =true;
+    //     const detections = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks(useTinyModel);
+    //     const resizedDetections = faceapi.resizeResults(detections, displaySize);
+    //     overlay.getContext('2d').clearRect(0, 0, overlay.width, overlay.height);
+    //     faceapi.draw.drawFaceLandmarks(overlay, resizedDetections);
+    //     ui.onFoundFace();
+    //     facetracker.trackFace(resizedDetections.landmarks.getLeftEye(),resizedDetections.landmarks.getRightEye());
+    //     requestAnimationFrame(detectLandmarks);
+    //   }catch{
+    //   }  
+    // },200);
   })      
 
 });

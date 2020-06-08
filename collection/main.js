@@ -49,13 +49,13 @@ $(document).ready(function() {
       } else if (event.keyCode == 39){
         key = "right";
       }
-  
-      if (key == calibration.getProceedKey()&&!dataset.posted) {
-        // user presses the correct key
+      
+      if (key == calibration.getProceedKey()&&!calibration.moving) {
+        // user presses the correct key and the butterfly stop moving
         dataset.captureExample();
         event.preventDefault();
         return false;
-      } else {
+      } else if (!calibration.moving){
         // flash the text to alert the user
         $('.verification').addClass('flash-verification');
         setTimeout(function() {

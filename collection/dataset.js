@@ -1,7 +1,6 @@
 window.dataset = {
   inputWidth: $('#eyes').width(),
   inputHeight: $('#eyes').height(),
-  posted: false, // for recording whether the data has been posted
   postIDs: [], // for recording the id of the data posted into the server
   train: {
     n: 0,
@@ -141,6 +140,8 @@ window.dataset = {
           "Content-Type": "application/json"
         },
         body: JSON.stringify(data) // body data type must match "Content-Type" header
+      }).catch(() => {
+        console.log("fail to post the data!");
       });
       let dat = await response.json();
       let id = dat.id;
@@ -152,6 +153,8 @@ window.dataset = {
     // delete the related id on the server
     const response = await fetch("https://gb.cs.unc.edu/json/drop/"+id, {
       method: "DELETE"
+    }).catch((err) => {
+      console.log("fail to delete the data, error:"+err);
     });
     // console.log("delete resp", response);  
   },
