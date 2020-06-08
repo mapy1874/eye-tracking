@@ -66,7 +66,7 @@ window.dataset = {
     // post the data into data set
     const postID = await dataset.postData('https://gb.cs.unc.edu/json/drop',dataset.train.n-1);
     dataset.postIDs.push(postID);
-    console.log("post successfully");
+    // console.log("post successfully");
   },
 
   /*
@@ -153,7 +153,7 @@ window.dataset = {
     const response = await fetch("https://gb.cs.unc.edu/json/drop/"+id, {
       method: "DELETE"
     });
-    console.log("delete resp", resp);  
+    // console.log("delete resp", response);  
   },
   
   fromJSON: function(data) {
