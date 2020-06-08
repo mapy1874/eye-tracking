@@ -85,7 +85,7 @@ window.dataset = {
       // get the last image's id and delete it from the server
       const lastID = this.postIDs.pop();
       dataset.deleteData("https://gb.cs.unc.edu/json/drop", lastID);
-      
+
       // update the n and UI
       set.n -= 1
       ui.onDeleteExample(dataset.train.n);
@@ -142,7 +142,8 @@ window.dataset = {
         },
         body: JSON.stringify(data) // body data type must match "Content-Type" header
       });
-      let id = await response.json().id;
+      let dat = await response.json();
+      let id = dat.id;
       return id;
     }
   },
