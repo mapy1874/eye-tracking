@@ -2,6 +2,7 @@ window.dataset = {
   inputWidth: $('#eyes').width(),
   inputHeight: $('#eyes').height(),
   posted: false, // for recording whether the data has been posted
+  postIDs: [], // for recording the id of the data posted into the server
   train: {
     n: 0,
     x: null,
@@ -60,9 +61,11 @@ window.dataset = {
     target[1] = target[1] - 0.5;
     const key = "train";
 
-    dataset.addToDataset(image, metaInfos, target, key);
-
+    await dataset.addToDataset(image, metaInfos, target, key);
     ui.onAddExample(dataset.train.n);
+    // post the data into data set
+    await dataset.postData('https://gb.cs.unc.edu/json/drop',data.train.n-1);
+    console.log("post successfully");
   },
 
   /*
@@ -110,30 +113,23 @@ window.dataset = {
     calibration.moveCalibration();
   },
 
-  toJSON: function() {
+  toJSON: function(index) {
+    // transform the index th data to a json object
     if (dataset.train.n){
       return {
-        inputWidth: dataset.inputWidth,
-        inputHeight: dataset.inputHeight,
-        train: {
-          shapes: {
-            image: [dataset.train.n, dataset.inputWidth, dataset.inputHeight, 3],
-            y: [dataset.train.n, dataset.train.y[0].length]
-          },
-          n: dataset.train.n,
           x: {
-            eyeImage:dataset.train.x[0],
-            eyePositions:dataset.train.x[1],
+            eyeImage:dataset.train.x[0][index],
+            eyePositions:dataset.train.x[1][index],
           },
           y: dataset.train.y,
         }
       };  
-    }
   },
 
-  postData: async function(url = 'https://gb.cs.unc.edu/json/drop') {
+  postData: async function(url = 'https://gb.cs.unc.edu/json/drop', index) {
+    // post the index th data to the server and return its id
     if(dataset.train.n){
-      const data = await dataset.toJSON();
+      const data = await dataset.toJSON(index);
       const response = await fetch(url, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         headers: {
@@ -141,6 +137,8 @@ window.dataset = {
         },
         body: JSON.stringify(data) // body data type must match "Content-Type" header
       });
+      let id = await response.json().id;
+      return id;
     }
   },
 
@@ -164,3 +162,6 @@ window.dataset = {
     ui.onAddExample(dataset.train.n);
   },
 };
+
+
+

@@ -92,7 +92,7 @@ window.ui = {
     }
   },
 
-  onPostedData: function(){
+  onPostData: function(){
     $('#post-data').prop('disabled', true);
     this.showInfo(
       '<h3>Thank you for making the world a bit better!</h3>' +
