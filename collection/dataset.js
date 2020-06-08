@@ -64,7 +64,8 @@ window.dataset = {
     await dataset.addToDataset(image, metaInfos, target, key);
     ui.onAddExample(dataset.train.n);
     // post the data into data set
-    await dataset.postData('https://gb.cs.unc.edu/json/drop',data.train.n-1);
+    const postID = await dataset.postData('https://gb.cs.unc.edu/json/drop',dataset.train.n-1);
+    dataset.postIDs.push(postID);
     console.log("post successfully");
   },
 
@@ -81,6 +82,10 @@ window.dataset = {
       set.x[1].pop();
       set.y.pop();
 
+      // get the last image's id and delete it from the server
+      const lastID = this.postIDs.pop();
+      dataset.deleteData("https://gb.cs.unc.edu/json/drop", lastID);
+      
       // update the n and UI
       set.n -= 1
       ui.onDeleteExample(dataset.train.n);
@@ -121,7 +126,7 @@ window.dataset = {
             eyeImage:dataset.train.x[0][index],
             eyePositions:dataset.train.x[1][index],
           },
-          y: dataset.train.y,
+          y: dataset.train.y[index],
         }
       };  
   },
@@ -142,12 +147,12 @@ window.dataset = {
     }
   },
 
-  deleteData: async function(){
-    for(let i = 1; i++; i<23){
-      resp = await fetch("https://gb.cs.unc.edu/json/drop/"+i, {
-        method: "DELETE"
-      });
-    }
+  deleteData: async function(url='https://gb.cs.unc.edu/json/drop',id){
+    // delete the related id on the server
+    const response = await fetch("https://gb.cs.unc.edu/json/drop/"+id, {
+      method: "DELETE"
+    });
+    console.log("delete resp", resp);  
   },
   
   fromJSON: function(data) {
