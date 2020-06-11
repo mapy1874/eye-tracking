@@ -141,7 +141,7 @@ window.dataset = {
         },
         body: JSON.stringify(data) // body data type must match "Content-Type" header
       }).catch(() => {
-        console.log("fail to post the data!");
+        alert("Fail to post the data! Please check your network connection.");
       });
       let dat = await response.json();
       let id = dat.id;
@@ -156,7 +156,7 @@ window.dataset = {
     }).catch((err) => {
       console.log("fail to delete the data, error:"+err);
     });
-    // console.log("delete resp", response);  
+    alert("Fail to delete the data! Please check your network connection.");
   },
   
   fromJSON: function(data) {

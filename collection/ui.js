@@ -43,6 +43,27 @@ window.ui = {
     // Call this when an example is added.
     this.nExamples = nTrain;
     this.setContent('n-train', nTrain);
+    if (nTrain == 5) {
+      this.showInfo(
+        '<h3>Awesome! 😍</h3>' +
+          'You\'ve collected 5 data. Let\'s make it to 100<br>'+
+          'Your data points has been stored in our database!'
+      );
+    } else if (nTrain == 50) {
+      this.showInfo(
+        '<h3>Keep going! 😍</h3>' +
+          'You\'ve collected 50 data. Half way from 100<br>'+
+          'Your data points has been stored in our database!'
+      );
+    } else if (nTrain == 100) {
+      this.showInfo(
+        '<h3>100!</h3>' +
+          'Thank you for contributing to our project!<br>'+
+          'Your data points has been stored in our database!<br>'+
+          'Feel free to collect more if you want.<br>'+
+          'Check out a basic eye tracking website <a href="https://patrickma.me/eye-tracking" target="_blank">here</a> 😄'
+      );
+    }
   },
 
   onDeleteExample: function(nTrain){
