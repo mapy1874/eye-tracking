@@ -154,11 +154,45 @@ window.dataset = {
     const response = await fetch("https://gb.cs.unc.edu/json/drop/"+id, {
       method: "DELETE"
     }).catch((err) => {
-      console.log("fail to delete the data, error:"+err);
+      alert("fail to delete the data, error:"+err);
     });
-    alert("Fail to delete the data! Please check your network connection.");
   },
+
+  getAllExamples: async function(){
+    const allData = [];
+    for(let id = 1; id < 500; id++){
+      let hasError = false;
+      let resp = await fetch("https://gb.cs.unc.edu/json/drop/"+id, {
+        method: 'GET',
+      }).catch(()=>{
+        hasError = true;
+      });
+
+      if (hasError){ // jump the data if there is error there
+        continue;
+      }
+      console.log("get resp", resp);
+      let data = await resp.json();
+      console.log("get data", data);
+      let newItem = JSON.stringify(data);
+      if (newItem != "{}"){
+        allData.push(JSON.stringify(data));
+      }
+    }
+    download(allData, 'dataset.json', 'text/plain');
+  },
+
   
+  download: function (content, fileName, contentType) {
+    const a = document.createElement('a');
+    const file = new Blob([content], {
+      type: contentType,
+    });
+    a.href = URL.createObjectURL(file);
+    a.download = fileName;
+    a.click();
+  },
+
   fromJSON: function(data) {
     dataset.inputWidth = data.inputWidth;
     dataset.inputHeight = data.inputHeight;
@@ -173,4 +207,13 @@ window.dataset = {
 };
 
 
+
+// for (let id = 350; id <400; id++){
+//   let response = await fetch("https://gb.cs.unc.edu/json/drop/"+id, {
+//     method: "DELETE"
+//   }).catch((err) => {
+//     alert("fail to delete the data, error:"+err);
+//   });
+  
+// }
 

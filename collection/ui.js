@@ -49,6 +49,12 @@ window.ui = {
           'You\'ve collected 5 data. Let\'s make it to 100<br>'+
           'Your data points has been stored in our database!'
       );
+    } else if (nTrain == 20) {
+      this.showInfo(
+        '<h3>Keep going! 😍</h3>' +
+          'You\'ve collected 20 data. Half way from 100<br>'+
+          'Your data points has been stored in our database!'
+      );
     } else if (nTrain == 50) {
       this.showInfo(
         '<h3>Keep going! 😍</h3>' +
@@ -112,6 +118,15 @@ window.ui = {
       );
     }
   },
+
+  getAllExamples: function(){
+    let resp = await fetch("https://gb.cs.unc.edu/json/drop", {
+      headers: { Accept: "application/json" }
+    });
+    console.log("get resp", resp);
+    let data = await resp.json();
+    console.log("get data", data);  
+  };
 
   onPostData: function(){
     $('#post-data').prop('disabled', true);
