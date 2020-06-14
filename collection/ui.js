@@ -117,17 +117,7 @@ window.ui = {
           'Check out the source code at <a href="https://github.com/mapy1874/lookie-lookie" target="_blank">github.com/mapy1874/lookie-lookie</a> 😄',
       );
     }
-  },
-
-  getAllExamples: function(){
-    let resp = await fetch("https://gb.cs.unc.edu/json/drop", {
-      headers: { Accept: "application/json" }
-    });
-    console.log("get resp", resp);
-    let data = await resp.json();
-    console.log("get data", data);  
-  };
-
+  }, 
   onPostData: function(){
     $('#post-data').prop('disabled', true);
     this.showInfo(
