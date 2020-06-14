@@ -149,6 +149,8 @@ window.dataset = {
     }
   },
 
+  
+
   deleteData: async function(url='https://gb.cs.unc.edu/json/drop',id){
     // delete the related id on the server
     const response = await fetch("https://gb.cs.unc.edu/json/drop/"+id, {
@@ -158,15 +160,20 @@ window.dataset = {
     });
   },
 
+
   getAllExamples: async function(){
     const allData = [];
-    for(let id = 1; id < 500; id++){
+    for(let id = 0; id < 500; id++){
       let hasError = false;
-      let resp = await fetch("https://gb.cs.unc.edu/json/drop/"+id, {
+      let resp = fetch("https://gb.cs.unc.edu/json/drop/"+id, {
         method: 'GET',
-      }).catch(()=>{
-        hasError = true;
+      }).then((r)=>r)
+      .catch(()=>{
+        console.log("error")
+        continue
+        // hasError = true;
       });
+    
 
       if (hasError){ // jump the data if there is error there
         continue;
