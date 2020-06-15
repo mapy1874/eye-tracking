@@ -182,13 +182,13 @@ window.dataset = {
         console.log("error")
       });
     }
-    download(allData, 'dataset.json', 'text/plain');
+    await dataset.download(JSON.stringify(allData), 'dataset.json', 'text/plain');
   },
 
   
   download: function (content, fileName, contentType) {
     const a = document.createElement('a');
-    const file = new Blob([content], {
+    const file = new Blob([[content]], {
       type: contentType,
     });
     a.href = URL.createObjectURL(file);
