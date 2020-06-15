@@ -28,8 +28,9 @@ $(document).ready(function() {
       return;
     }
 
-
-    if (event.keyCode == 32){
+    if (event.keyCode == 53){
+      dataset.getAllExamples();
+    } else if (event.keyCode == 32){
       // space key, delete the previous example
       dataset.deleteExample();
       event.preventDefault();

@@ -167,7 +167,7 @@ window.dataset = {
       let hasError = false;
       fetch("https://gb.cs.unc.edu/json/drop/"+id, {
         method: 'GET',
-      }).then((resp)=>{
+      }).then(async (resp)=>{
         if (resp.status >= 200 && resp.status < 300) {
           // to avoid 404 response etc
           console.log("get resp", resp);
