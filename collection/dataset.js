@@ -160,29 +160,50 @@ window.dataset = {
     });
   },
 
+  // get all available IDs and return them in a list
+  getAvailableIDs: async function(){
+    IDs = [];
+    let resp = await fetch("https://gb.cs.unc.edu/json/drop", {
+      headers: { Accept: "application/json" }
+    });
+    console.log("get resp", resp);
+    let data = await resp.json();
+    console.log("get data", data);  
+    for (drop of data.drops){
+      IDs.push(drop.id);
+    }
+    return IDs;
+  },
 
+  // get all available examples from the dataset
   getAllExamples: async function(){
     const allData = [];
-    for(let id = 0; id < 10; id++){
-      let hasError = false;
-      fetch("https://gb.cs.unc.edu/json/drop/"+id, {
-        method: 'GET',
-      }).then(async (resp)=>{
-        if (resp.status >= 200 && resp.status < 300) {
-          // to avoid 404 response etc
-          console.log("get resp", resp);
-          let data = await resp.json();
-          console.log("get data", data);
-          let newItem = JSON.stringify(data);
-          if (newItem != "{}"){
-            allData.push(JSON.stringify(data));
-          }
-        }
-      }).catch(()=>{
-        console.log("error")
-      });
+    const availableIDs = this.getAvailableIDs();
+    const promiseList = [];
+    for (i of availableIDs){
+        console.log("pushing");
+        promiseList.push(
+            fetch("https://gb.cs.unc.edu/json/drop/"+i, {
+                method: 'GET',
+            }).then(async (resp)=>{
+                if (resp.status >= 200 && resp.status < 300) {
+                // to avoid 404 response etc
+                console.log("get resp", resp);
+                let data = await resp.json();
+                console.log("get data", data);
+                let newItem = await JSON.stringify(data);
+                if (newItem != "{}"){
+                    await allData.push(JSON.stringify(data));
+                }
+                }
+            }).catch(()=>{
+                console.log("error");
+            })
+        )   
     }
-    await dataset.download(JSON.stringify(allData), 'dataset.json', 'text/plain');
+    Promise.all(promiseList).then(()=>{
+        dataset.download(JSON.stringify(allData), 'dataset.json', 'text/plain');
+    });    
   },
 
   
