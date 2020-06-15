@@ -162,15 +162,16 @@ window.dataset = {
 
   // get all available IDs and return them in a list
   getAvailableIDs: async function(){
-    IDs = [];
+    const IDs = [];
     let resp = await fetch("https://gb.cs.unc.edu/json/drop", {
       headers: { Accept: "application/json" }
     });
-    console.log("get resp", resp);
+    // console.log("get resp", resp);
     let data = await resp.json();
     console.log("get data", data);  
     for (drop of data.drops){
       IDs.push(drop.id);
+      console.log(IDs)
     }
     return IDs;
   },
@@ -178,7 +179,7 @@ window.dataset = {
   // get all available examples from the dataset
   getAllExamples: async function(){
     const allData = [];
-    const availableIDs = this.getAvailableIDs();
+    const availableIDs = await this.getAvailableIDs();
     const promiseList = [];
     for (i of availableIDs){
         console.log("pushing");
