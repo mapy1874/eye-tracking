@@ -163,28 +163,24 @@ window.dataset = {
 
   getAllExamples: async function(){
     const allData = [];
-    for(let id = 0; id < 500; id++){
+    for(let id = 0; id < 10; id++){
       let hasError = false;
-      let resp = fetch("https://gb.cs.unc.edu/json/drop/"+id, {
+      fetch("https://gb.cs.unc.edu/json/drop/"+id, {
         method: 'GET',
-      }).then((r)=>r)
-      .catch(()=>{
+      }).then((resp)=>{
+        if (resp.status >= 200 && resp.status < 300) {
+          // to avoid 404 response etc
+          console.log("get resp", resp);
+          let data = await resp.json();
+          console.log("get data", data);
+          let newItem = JSON.stringify(data);
+          if (newItem != "{}"){
+            allData.push(JSON.stringify(data));
+          }
+        }
+      }).catch(()=>{
         console.log("error")
-        continue
-        // hasError = true;
       });
-    
-
-      if (hasError){ // jump the data if there is error there
-        continue;
-      }
-      console.log("get resp", resp);
-      let data = await resp.json();
-      console.log("get data", data);
-      let newItem = JSON.stringify(data);
-      if (newItem != "{}"){
-        allData.push(JSON.stringify(data));
-      }
     }
     download(allData, 'dataset.json', 'text/plain');
   },
