@@ -13,11 +13,17 @@ guide you through it.
 ## Dataset
 We collect data from users [here](https://patrickma.me/eye-tracking/collection/collection.html). The data is collected in the following format:
 
-1. User's eye image, 25\*50\*3
+1. Base64 encoding of the user's eye image, 25\*50\*3
 
-1. The relative positions of the rectangular surrounding user's eyes in the video. we denote the rectangular in (centerX, centerY, width, hieght), all of these parameters are between 0 and 1.
+1. leftEye: 6 left eye landmarks positions in the form of (x,y), where -1<=x,y<=1
 
-1. The relative position (x,y) that the user looks at in the browser, where 0<=x,y<=1, (0,0) means upper left corner of the browser.
+1. rightEye: 6 right eye landmarks positions in the form of (x,y), where -1<=x,y<=1
+
+Here are the landmarks and their indexes:
+
+![landmarks](landmarks_68.png)
+
+1. The relative position (x,y) that the user looks at in the browser, where -1<=x,y<=1, (-1,-1) means upper left corner of the browser.
  
 
 ## Contributors

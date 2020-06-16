@@ -56,8 +56,8 @@ window.dataset = {
 
   addExample: async function(image, metaInfos, target) {
     // Given an image, eye pos and target coordinates, adds them to our dataset.
-    target[0] = target[0] - 0.5;
-    target[1] = target[1] - 0.5;
+    target[0] = (target[0] - 0.5)*2;
+    target[1] = (target[1] - 0.5)*2;
     const key = "train";
 
     await dataset.addToDataset(image, metaInfos, target, key);
