@@ -82,6 +82,14 @@ $(document).ready(() => {
                         $('.verification').
                             html("<div><strong>&rarr;</strong></div>");
                     }
+
+                    // make the arrow be at the top of the butterfly if it is at the bottom
+                    if (nextY>0.85*$(window).height()){
+                        $('.verification').css({"top": "-40px"});
+                    } else{
+                        $('.verification').css({"top": "20px"});
+                    }
+
                     cancelAnimationFrame(id);
                     calibration.moving = false;
                 } else {

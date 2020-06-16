@@ -83,7 +83,7 @@ window.dataset = {
 
       // get the last image's id and delete it from the server
       const lastID = this.postIDs.pop();
-      dataset.deleteData("https://gb.cs.unc.edu/json/drop", lastID);
+      dataset.deleteData("https://gb.cs.unc.edu/json/drop/", lastID);
 
       // update the n and UI
       set.n -= 1
@@ -151,9 +151,9 @@ window.dataset = {
 
   
 
-  deleteData: async function(url='https://gb.cs.unc.edu/json/drop',id){
+  deleteData: async function(url='https://gb.cs.unc.edu/json/drop/',id){
     // delete the related id on the server
-    const response = await fetch("https://gb.cs.unc.edu/json/drop/"+id, {
+    const response = await fetch(url+id, {
       method: "DELETE"
     }).catch((err) => {
       alert("fail to delete the data, error:"+err);
