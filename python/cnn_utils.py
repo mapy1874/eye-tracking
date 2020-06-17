@@ -25,7 +25,6 @@ def create_dataframe():
 
         leftEye = np.array(temp["x"]["eyePositions"]["leftEye"])
         leftEyes.append(leftEye)
-        print(leftEye.shape)
         rightEye = np.array(temp["x"]["eyePositions"]["rightEye"])
         rightEyes.append(rightEye)
 
@@ -34,14 +33,12 @@ def create_dataframe():
 
     list_of_tuples = list(zip(eyeImages,leftEyes,rightEyes,ys))
     df = pd.DataFrame(list_of_tuples, columns =['eyeImage','leftEye', 'rightEye', 'y'])
-    print(df["leftEye"][0])
-    df.to_csv('experiment.csv',na_rep='Unkown') # missing value save as Unknown
-    return df
+    x_train = df.loc[:,["eyeImage","leftEye","rightEye"]]
+    y_train = df.loc[:,["y"]]
+    return x_train, y_train
 
 def convert_base64_to_nparray(image_data):
     image = image_data.split(",")[1]
     image = np.asarray(bytearray(base64.b64decode(image)), dtype="uint8")
     image = cv2.imdecode(image, cv2.IMREAD_COLOR)
     return image
-
-create_dataframe()
