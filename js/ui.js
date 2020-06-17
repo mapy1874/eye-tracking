@@ -32,6 +32,7 @@ window.ui = {
       this.readyToCollect = true;
       this.showInfo(
         "<h3>Let's start! 🙂</h3>" +
+          "<h4>Please visit <a href = 'https://patrickma.me/eye-collection/'>here</a> if you want to contribute to our reasearch </h4>"+
           '<ul><li>Collect data points by following the "butterfly" with your eyes and pressing left/right arrow 👀</li></br>' +
           '<li>You can also delete previous data points one by one by hitting the space key</li></ul>',
         true,
