@@ -2,6 +2,7 @@ import json
 import ijson
 import base64
 import cv2
+import random
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -24,9 +25,9 @@ def create_dataframe():
         eyeImage = convert_base64_to_nparray(temp["x"]["eyeImage"])
         eyeImages.append(eyeImage)
 
-        leftEye = np.array(temp["x"]["eyePositions"]["leftEye"])
+        leftEye = np.array(temp["x"]["eyePositions"]["leftEye"]).reshape(12)
         leftEyes.append(leftEye)
-        rightEye = np.array(temp["x"]["eyePositions"]["rightEye"])
+        rightEye = np.array(temp["x"]["eyePositions"]["rightEye"]).reshape(12)
         rightEyes.append(rightEye)
 
         y = np.array(temp["y"])
@@ -34,17 +35,32 @@ def create_dataframe():
 
     list_of_tuples = list(zip(eyeImages,leftEyes,rightEyes,ys))
     df = pd.DataFrame(list_of_tuples, columns =['eyeImage','leftEye', 'rightEye', 'y'])
-    x_train = df.loc[:,["eyeImage","leftEye","rightEye"]]
-    y_train = df.loc[:,["y"]]
-    return x_train, y_train
+    return df
+
+def create_train_validation(df, train_percentage=0.7):
+    """
+    Take in original dataframe and split it into train&validation set
+    Follow the 70/30 convention
+    input:
+        df
+    output:
+        X_train
+        X_validation
+        Y_train,
+        Y_validation
+    """
+    train = df.sample(frac=train_percentage).sort_index()
+    validation = df.drop(train.index).sort_index()
+    return train.iloc[:,0:3], validation.iloc[:,0:3], pd.DataFrame(train.iloc[:,-1]), pd.DataFrame(validation.iloc[:,-1])
 
 def convert_base64_to_nparray(image_data):
     """
     takes in *a* base64 encoding image and convert it into a numpy array
+    every element in the array ranges from 0 to 1
     """
     image = image_data.split(",")[1]
     image = np.asarray(bytearray(base64.b64decode(image)), dtype="uint8")
-    image = cv2.imdecode(image, cv2.IMREAD_COLOR)
+    image = cv2.imdecode(image, cv2.IMREAD_COLOR)/255.
     return image
 
 def create_binary_labels(y_labels):
@@ -83,3 +99,24 @@ def create_quaternary_labels(y_labels):
     quanternary_labels.loc[isRight & isLower] = "LR"
     quanternary_labels.loc[~isRight & isLower] = "LL"
     return quanternary_labels
+
+def plot_eyeImages(X, Y):
+    """
+    Plot 30 images with their labels in a 5*6 grid
+    Input:
+        X: a df with column eyeImage
+        Y: a df with column y
+    Return:
+        None
+    """
+    indexes = np.array(random.sample(range(len(Y)), 30))
+    indexes.sort()    
+    images_arr = X["eyeImage"].iloc[indexes]
+    labels_arr = Y["y"].iloc[indexes]
+    fig, axes = plt.subplots(5, 6, figsize=(20,12.5))
+    axes = axes.flatten()
+    for img, ax, label, index in zip(images_arr, axes, labels_arr, indexes):
+        ax.imshow(img)
+        ax.set_title("idx: "+str(index)+" label: "+label,fontdict = {'fontsize': 20})
+    plt.tight_layout()
+    plt.show()
