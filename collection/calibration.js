@@ -13,9 +13,9 @@ class CalibrationPositions {
             // record the last position of the last shuffled array
             this.lastLast = this.positions[this.positions.length-1]
             this.shuffle();
-            if (this.positions[0][0] == this.lastLast[0] && this.positions[0][1]==this.lastLast[0][1]){
+            if (Math.abs(this.positions[0][0]-this.lastLast[0])<1e-6 && Math.abs(this.positions[0][1]-this.lastLast[0][1])<1e-6){
                 // the butterfly won't move as the last pos of the last array is the same as the first pos of this array
-                this.i += 1
+                this.i += 1;
             }
         }
         let coord =  [this.positions[this.i][0]*0.9,this.positions[this.i][1]*0.9];

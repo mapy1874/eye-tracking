@@ -115,7 +115,7 @@ window.dataset = {
 
     // make sure this image is different from the last one
     if (this.train.n && img == dataset.train.x[0][this.train.n-1]){
-      alert("The eye image is the same as your last example! Please adjust your head post slightly to make sure the facetracker follows you.");
+      alert("The eye image is the same as your last example! Please adjust your head pose slightly to make sure the facetracker follows you.");
       return;
     }
     
