@@ -47,6 +47,7 @@ window.dataset = {
       set.x = [[image], [metaInfos]];
       set.y = [target];
     } else {
+      // if set.x[0]
       set.x[0].push(image);
       set.x[1].push(metaInfos);
       set.y.push(target)
@@ -111,6 +112,13 @@ window.dataset = {
     // Take the latest image from the eyes canvas and add it to our dataset.
     // Takes the coordinates of the mouse.
     const img = dataset.getImage();
+
+    // make sure this image is different from the last one
+    if (this.train.n && img == dataset.train.x[0][this.train.n-1]){
+      alert("The eye image is the same as your last example! Please adjust your head post slightly to make sure the facetracker follows you.");
+      return;
+    }
+    
     const positions = calibration.getCurPosition();
     const metaInfos = dataset.getMetaInfos();
     dataset.addExample(img, metaInfos, positions);
