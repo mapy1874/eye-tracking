@@ -115,7 +115,8 @@ window.dataset = {
 
     // make sure this image is different from the last one
     if (this.train.n && img == dataset.train.x[0][this.train.n-1]){
-      alert("The eye image is the same as your last example! Please adjust your head pose slightly to make sure the facetracker follows you.");
+      ui.showInfo("The eye image is the same as your last example! Please adjust your head pose slightly to make sure the facetracker follows you.");
+      calibration.moveCalibration();
       return;
     }
     
@@ -196,14 +197,14 @@ window.dataset = {
                 method: 'GET',
             }).then(async (resp)=>{
                 if (resp.status >= 200 && resp.status < 300) {
-                // to avoid 404 response etc
-                console.log("get resp", resp);
-                let data = await resp.json();
-                console.log("get data", data);
-                let newItem = await JSON.stringify(data);
-                if (newItem != "{}"){
-                    await allData.push(JSON.stringify(data));
-                }
+                  // to avoid 404 response etc
+                  console.log("get resp", resp);
+                  let data = await resp.json();
+                  console.log("get data", data);
+                  let newItem = await JSON.stringify(data);
+                  if (newItem != "{}"){
+                      await allData.push(JSON.stringify(data));
+                  }
                 }
             }).catch(()=>{
                 console.log("error");

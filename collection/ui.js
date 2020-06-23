@@ -69,6 +69,9 @@ window.ui = {
           'Feel free to collect more if you want.<br>'+
           'Check out a basic eye tracking website <a href="https://patrickma.me/eye-tracking" target="_blank">here</a> 😄'
       );
+    } else {
+      this.showInfo(
+        '<h3>Keep going!</h3>', true);
     }
   },
 
