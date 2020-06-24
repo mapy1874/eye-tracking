@@ -1,4 +1,23 @@
-#imageContainer img {
-    width: 20%;
+#imageContainer figure {
+    width: 19%;
+    height: 100px;
+    padding: 0.5%;
+}
+
+#imageContainer figure img{
+    width: 80%;
     height: auto;
+}
+#imageContainer figure figcaption{
+    font-size: medium;
+}
+
+
+figure {
+    display: inline-block;
+    margin-block-start: 0;
+    margin-block-end: 0;
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+    text-align: center;
 }
