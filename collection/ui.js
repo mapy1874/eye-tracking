@@ -46,21 +46,15 @@ window.ui = {
     if (nTrain == 5) {
       this.showInfo(
         '<h3>Awesome! 😍</h3>' +
-          'You\'ve collected 5 data. Let\'s make it to 100<br>'+
+          'You\'ve collected 5 data.<br>'+
           'Your data points has been stored in our database!'
       );
-    } else if (nTrain == 20) {
+    } else if (nTrain %10 ==0 && nTrain != 100) {
       this.showInfo(
         '<h3>Keep going! 😍</h3>' +
-          'You\'ve collected 20 data. Half way from 100<br>'+
+          `You\'ve collected ${nTrain} data.<br>`+
           'Your data points has been stored in our database!'
-      );
-    } else if (nTrain == 50) {
-      this.showInfo(
-        '<h3>Keep going! 😍</h3>' +
-          'You\'ve collected 50 data. Half way from 100<br>'+
-          'Your data points has been stored in our database!'
-      );
+      )
     } else if (nTrain == 100) {
       this.showInfo(
         '<h3>100!</h3>' +
