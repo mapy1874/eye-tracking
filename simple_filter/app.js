@@ -5,7 +5,7 @@ async function getAvailableIDs (){
     });
     // console.log("get resp", resp);
     let data = await resp.json();
-    console.log("get data", data);  
+    // console.log("get data", data);  
     for (drop of data.drops){
       IDs.push(drop.id);
     }
@@ -47,9 +47,9 @@ async function getAllExamples(start, end){
             }).then(async (resp)=>{
                 if (resp.status >= 200 && resp.status < 300) {
                     // to avoid 404 response etc
-                    console.log("get resp", resp);
+                    // console.log("get resp", resp);
                     let data = await resp.json();
-                    console.log("get data", data);
+                    // console.log("get data", data);
                     // let newItem = await JSON.stringify(data);
                     await allData.push({"eyeImage":data["x"]["eyeImage"],
                                         "y":[data["y"][0].toPrecision(3),
@@ -71,11 +71,12 @@ async function getAllExamples(start, end){
 async function tripleClickHandler(event) {
     if (event.detail === 3) {
         // delete the data from the db
-        console.log("https://gb.cs.unc.edu/json/drop/"+event.target.alt);
+        // console.log("https://gb.cs.unc.edu/json/drop/"+event.target.alt);
         fetch("https://gb.cs.unc.edu/json/drop/"+event.target.alt, {
                 method: 'DELETE',
             }).then(async (resp)=>{
                 event.target.removeEventListener("click",tripleClickHandler);
+                event.target = ""
             }).catch(()=>{
                 alert("delete unsuccessfully!");
         });
