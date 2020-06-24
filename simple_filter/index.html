@@ -3,20 +3,43 @@
 <head>
     <title>Image Filter</title>
     <link rel="stylesheet" href="style.css">
-
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
 
 <body>
-    <form>
-        <label><b>Starting index (from 0th exampls, inclusive)</b></label>
-        <input type="text" name="message" id="starting_index"></br>
-        <label><b>Ending index (inclusive)</b></label>
-        <input type="text" name="message" id="ending_index">
-    </form>
-    <input type="submit" onclick="showInput();"><br/>
-
+    
+    <div class="container">
+        <div class="jumbotron">
+            <h1>Instructions</h1>
+            <h2>Retrieve</h2>
+            <p>
+                Type in the starting and ending index of the data you want.
+                <strong>Note that this is different from the id of the data.</strong> 
+                Suppose the 0th available data has an id of 99.
+                If we set both starting index and ending index to 0, 
+                the website will return the data with id=99 
+            </p>
+            <h2>Delete</h2>
+            <p>
+                Triple click the bad image to delete it in the database.
+            </p>     
+            <div class="form-group">
+                <form>
+                    <label><b>Starting index (from 0th example, inclusive)</b></label>
+                    </br>
+                    <input type="text" name="message" id="starting_index">
+                    </br>
+                    <label><b>Ending index (inclusive)</b></label>
+                    </br>
+                    <input type="text" name="message" id="ending_index">
+                </form>
+            </div>
+            <p id="loading"></p>
+            <input type="submit" onclick="showInput();"><br/>
+                   
+        </div>
+    </div>
     <div id="imageContainer">
-
     </div>
     <script src="app.js"></script>
 </body>

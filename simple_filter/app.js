@@ -20,13 +20,26 @@ function showInput() {
         }
     let start = Number(document.getElementById("starting_index").value);
     let end = Number(document.getElementById("ending_index").value);
-    // renderData(start, end);
+    renderData(start, end);
 }
 
 async function getAllExamples(start, end){
     const allData = [];
     const availableIDs = await getAvailableIDs();
     const promiseList = [];
+    if (start >= availableIDs.length) {
+        alert("no valid examples in the database!");
+        return;
+    }
+
+    if (start > end){
+        alert("make sure the start is <= end!");
+        return;
+    }
+
+    document.getElementById('imageContainer').innerHTML = "";
+
+    document.getElementById('imageContainer').innerHTML = "loading..."
     for (let i = start; i <= end&&i<availableIDs.length; i++){
         promiseList.push(
             fetch("https://gb.cs.unc.edu/json/drop/"+availableIDs[i], {
@@ -49,10 +62,12 @@ async function getAllExamples(start, end){
         )   
     }
     return Promise.all(promiseList).then(()=>{
+        document.getElementById('imageContainer').innerHTML = ""
         return allData;
     });    
 }
 
+// if an image is clicked triple times, it will be deleted
 async function tripleClickHandler(event) {
     if (event.detail === 3) {
         // delete the data from the db
@@ -66,6 +81,7 @@ async function tripleClickHandler(event) {
         });
     }
 }
+
 async function renderData(start, end){
     getAllExamples(start, end).then((allData) => {
 
