@@ -102,7 +102,7 @@ def convert_base64_to_nparray(image_data):
     image = image_data.split(",")[1]
     image = np.asarray(bytearray(base64.b64decode(image)), dtype="uint8")
     image = cv2.imdecode(image, cv2.COLOR_BGR2RGB)
-    res = cv2.resize(image, dsize=(256,256), interpolation=cv2.INTER_CUBIC)
+    res = cv2.resize(image, dsize=(224,224), interpolation=cv2.INTER_CUBIC)
     # get a normal color as the openCV use BGR in default
     RGB_img = cv2.cvtColor(res, cv2.COLOR_BGR2RGB)
     RGB_img = RGB_img/255.
