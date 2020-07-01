@@ -192,13 +192,24 @@ def plot_eyeImages(X, Y):
     plt.tight_layout()
     plt.show()
 
+    
 def create_tf_data(X, Y):
     """
     take in the X and Y and transform each column into np array
+    Every column in X will be substracted from its mean
     """
     
     eyeImage = np.stack(X['eyeImage'].to_numpy())
+    image_mean = np.mean(eyeImage, axis=0)
+    eyeImage = eyeImage-image_mean
+
     leftEye = np.stack(X['leftEye'].to_numpy())
+    leftEye_mean = np.mean(leftEye, axis=0)
+    leftEye = leftEye-leftEye_mean
+
     rightEye = np.stack(X['rightEye'].to_numpy())
+    rightEye_mean = np.mean(rightEye, axis=0)
+    rightEye = rightEye-rightEye_mean
+
     y = np.stack(Y['y'].to_numpy())
     return eyeImage, leftEye, rightEye, y
