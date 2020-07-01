@@ -28,7 +28,6 @@ def create_dataframe(relative_dir ='/../raw_data/dataset_062120.json' ):
             return float(obj)
         raise TypeError
 
-
     for item in ijson.items(f, "item"):
         # convert the string into a python dict
         temp = json.dumps(item, default=decimal_default)
@@ -192,49 +191,14 @@ def plot_eyeImages(X, Y):
         ax.set_xlabel("idx: "+str(index)+" label: "+label,fontdict = {'fontsize': 20})
     plt.tight_layout()
     plt.show()
-    
-def random_mini_batches(eyeImage, leftEye, rightEye, Y, mini_batch_size = 32, seed = 0):
-    """
-    Creates a list of random minibatches from (X, Y)
-    
-    Arguments:
-    X -- input data, of shape (input size, number of examples) (m, Hi, Wi, Ci)
-    Y -- true "label" vector (containing 0 if cat, 1 if non-cat), of shape (1, number of examples) (m, n_y)
-    mini_batch_size - size of the mini-batches, integer
-    seed -- this is only for the purpose of grading, so that you're "random minibatches are the same as ours.
-    
-    Returns:
-    mini_batches -- list of synchronous (mini_batch_X, mini_batch_Y)
-    """
-    
-    m = eyeImage.shape[0]                  # number of training examples
-    mini_batches = []
-    np.random.seed(seed)
-    
-    # Step 1: Shuffle (X, Y)
-    permutation = list(np.random.permutation(m))
-    shuffled_eyeImage = eyeImage[permutation,:,:,:]
-    shuffled_leftEye = leftEye[permutation,:,:,:]
-    shuffled_rightEye = rightEye[permutation,:,:,:] 
-    shuffled_Y = Y[permutation]
 
-    # Step 2: Partition (shuffled_X, shuffled_Y). Minus the end case.
-    num_complete_minibatches = math.floor(m/mini_batch_size) # number of mini batches of size mini_batch_size in your partitionning
-    for k in range(0, num_complete_minibatches):
-        mini_batch_eyeImage = shuffled_eyeImage[k * mini_batch_size : k * mini_batch_size + mini_batch_size]
-        mini_batch_leftEye = shuffled_leftEye[k * mini_batch_size : k * mini_batch_size + mini_batch_size]
-        mini_batch_rightEye = shuffled_rightEye[k * mini_batch_size : k * mini_batch_size + mini_batch_size]        
-        mini_batch_Y = shuffled_Y[k * mini_batch_size : k * mini_batch_size + mini_batch_size]
-        mini_batch = (mini_batch_eyeImage, mini_batch_leftEye, mini_batch_rightEye, mini_batch_Y)
-        mini_batches.append(mini_batch)
+def create_tf_data(X, Y):
+    """
+    take in the X and Y and transform each column into np array
+    """
     
-    # Handling the end case (last mini-batch < mini_batch_size)
-    if m % mini_batch_size != 0:
-        mini_batch_eyeImage = shuffled_eyeImage[num_complete_minibatches * mini_batch_size : m]
-        mini_batch_leftEye = shuffled_leftEye[num_complete_minibatches * mini_batch_size : m]
-        mini_batch_rightEye = shuffled_rightEye[num_complete_minibatches * mini_batch_size : m]
-        mini_batch_Y = shuffled_Y[num_complete_minibatches * mini_batch_size : m,:]
-        mini_batch = (mini_batch_eyeImage, mini_batch_leftEye, mini_batch_rightEye, mini_batch_Y)
-        mini_batches.append(mini_batch)
-    
-    return mini_batches
+    eyeImage = np.stack(X['eyeImage'].to_numpy())
+    leftEye = np.stack(X['leftEye'].to_numpy())
+    rightEye = np.stack(X['rightEye'].to_numpy())
+    y = np.stack(Y['y'].to_numpy())
+    return eyeImage, leftEye, rightEye, y
