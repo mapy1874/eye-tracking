@@ -1,0 +1,20 @@
+
+Train on 541 samples, validate on 136 samples
+Epoch 1/20
+541/541 [==============================] - 149s 275ms/step - loss: 1.9494 - accuracy: 0.4233 - val_loss: 4.7536 - val_accuracy: 0.2721
+Epoch 2/20
+541/541 [==============================] - 117s 216ms/step - loss: 0.6994 - accuracy: 0.7708 - val_loss: 4.8344 - val_accuracy: 0.2426
+Epoch 3/20
+541/541 [==============================] - 117s 217ms/step - loss: 0.2228 - accuracy: 0.9242 - val_loss: 5.4884 - val_accuracy: 0.2426
+Epoch 4/20
+541/541 [==============================] - 118s 218ms/step - loss: 0.1216 - accuracy: 0.9593 - val_loss: 1.7454 - val_accuracy: 0.2426
+Epoch 5/20
+541/541 [==============================] - 121s 224ms/step - loss: 0.1173 - accuracy: 0.9686 - val_loss: 1.8888 - val_accuracy: 0.2426
+Epoch 6/20
+541/541 [==============================] - 119s 219ms/step - loss: 0.0985 - accuracy: 0.9741 - val_loss: 2.2676 - val_accuracy: 0.2353
+Epoch 7/20
+541/541 [==============================] - 117s 217ms/step - loss: 0.1295 - accuracy: 0.9593 - val_loss: 1.9837 - val_accuracy: 0.2426
+Epoch 8/20
+541/541 [==============================] - 118s 218ms/step - loss: 0.0805 - accuracy: 0.9815 - val_loss: 2.2549 - val_accuracy: 0.2426
+Epoch 9/20
+ 64/541 [==>...........................] - ETA: 1:37 - loss: 0.2147 - accuracy: 0.9688
