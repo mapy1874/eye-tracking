@@ -3,6 +3,7 @@ import ijson
 import base64
 import cv2
 import random
+import requests
 import matplotlib.pyplot as plt
 from PIL import Image
 import pandas as pd
@@ -213,3 +214,79 @@ def create_tf_data(X, Y):
 
     y = np.stack(Y['y'].to_numpy())
     return eyeImage, leftEye, rightEye, y
+
+
+def create_df_with_ids():
+    """
+    request all good data from the API and return a new dataframe
+    The dataframe has the following column:
+        id: int, the actual id of the data in the database
+        eyeImage: String, the base64 encoding of an 25*50 eye image
+        leftEye: array of shape (6,2), the 6 landmark positions of the left eyes
+        rightEye: array of shape (6,2), the 6 landmark positions of the right eyes
+        y: array of shape (2,) the position that the user looking at
+        * leftEye, rightEye, y are represented from -1<=x,y<1, where (-1,-1) denotes the upper left of the screen
+    """
+    # request the available ids
+    data = requests.get("https://gb.cs.unc.edu/json/drop",headers= { "Accept": "application/json" })
+    available_ids = []
+    for drop in data.json()['drops']:
+        available_ids.append(drop['id'])
+
+    # There are some bad ids that we have discovered
+    # load the recording file and exclude them
+    # One can get bad ids from http://patrickma.me/simple_filter/
+    with open('bad_indexes.json') as file:
+        bad_ids = json.load(file)
+
+    # get the ids we want to put in our dataframe
+    valid_ids = [x for x in available_ids if x not in bad_ids]
+
+    # request data from our API
+    allData = []
+    for valid_id in valid_ids:
+        data = requests.get('https://gb.cs.unc.edu/json/drop/'+str(valid_id))
+        allData.append(data.json())
+
+    # create the data frame
+    eyeImages,leftEyes,rightEyes,ys = [], [], [], []
+
+    for temp in allData:
+        eyeImages.append(temp["x"]["eyeImage"])
+
+        leftEye = np.array(temp["x"]["eyePositions"]["leftEye"])
+        leftEyes.append(leftEye)
+        rightEye = np.array(temp["x"]["eyePositions"]["rightEye"])
+        rightEyes.append(rightEye)
+
+        y = np.array(temp["y"])
+        ys.append(y)
+
+    list_of_tuples = list(zip(valid_ids, eyeImages,leftEyes,rightEyes,ys))
+    df = pd.DataFrame(list_of_tuples, columns =['id','eyeImage','leftEye', 'rightEye', 'y'])
+
+    return df
+
+
+def verify_df(df):
+    """
+    take in a dataframe with id of each images and 
+    return the ids of the row that does not match the actual data in the database
+    parameter: df with columns id, eyeImage, leftEye, rightEye, y
+    return: a list of bad ids
+    """
+    ## Validate that the data frame has the same result from the API
+    bad_data_ids = []
+    for _, row in df.iterrows():
+        id = row["id"]
+        eyeImage = row["eyeImage"]
+        leftEye = row["leftEye"]
+        rightEye = row["rightEye"]
+        y = row["y"]
+
+        data = requests.get('https://gb.cs.unc.edu/json/drop/'+str(id))
+        data = data.json()
+        if str(eyeImage) != str(data["x"]["eyeImage"]) or not (leftEye == data["x"]["eyePositions"]["leftEye"]).all() or not (rightEye == data["x"]["eyePositions"]["rightEye"]).all() or not (y == data["y"]).all():
+            bad_data_ids.append(id)
+
+    return bad_data_ids
