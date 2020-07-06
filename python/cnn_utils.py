@@ -11,10 +11,10 @@ import numpy as np
 import os.path
 import decimal
 
-def create_dataframe(relative_dir ='/../raw_data/dataset_062120.json' ):
+def create_dataframe(relative_dir ='/../raw_data/dataset_062120.json', image_size=(224,224)):
     """
     convert the JSON file of my research into a dataframe with the following columns:
-    eyeImage: np array with shape (25, 50, 3)
+    eyeImage: np array with shape @image_size
     leftEye: np array with shape (6,2): 6 left eye landmarks positions in the form of (x,y), where -1<=x,y<=1
     rightEye: np array with shape (6,2): 6 right eye landmarks positions in the form of (x,y), where -1<=x,y<=1
     y: the position that the user looks at on the screen in the form of (x,y), where -1<=x,y<=1
@@ -34,7 +34,7 @@ def create_dataframe(relative_dir ='/../raw_data/dataset_062120.json' ):
         temp = json.dumps(item, default=decimal_default)
         temp = json.loads(temp) 
         # convert the image into the np array
-        eyeImage = convert_base64_to_nparray(temp["x"]["eyeImage"])
+        eyeImage = convert_base64_to_nparray(temp["x"]["eyeImage"],image_size)
         eyeImages.append(eyeImage)
 
         leftEye = np.array(temp["x"]["eyePositions"]["leftEye"]).reshape(12)
@@ -94,7 +94,7 @@ def create_train_validation(df, train_percentage=0.8):
     validation = df.drop(train.index).sort_index()
     return train.iloc[:,0:3], validation.iloc[:,0:3], pd.DataFrame(train.iloc[:,-1]), pd.DataFrame(validation.iloc[:,-1])
 
-def convert_base64_to_nparray(image_data):
+def convert_base64_to_nparray(image_data, image_size):
     """
     takes in *a* base64 encoding image and convert it into a numpy array of shape (256,256,3)
     every element in the array ranges from 0 to 1
@@ -102,7 +102,7 @@ def convert_base64_to_nparray(image_data):
     image = image_data.split(",")[1]
     image = np.asarray(bytearray(base64.b64decode(image)), dtype="uint8")
     image = cv2.imdecode(image, cv2.COLOR_BGR2RGB)
-    res = cv2.resize(image, dsize=(224,224), interpolation=cv2.INTER_CUBIC)
+    res = cv2.resize(image, dsize=image_size, interpolation=cv2.INTER_CUBIC)
     # get a normal color as the openCV use BGR in default
     RGB_img = cv2.cvtColor(res, cv2.COLOR_BGR2RGB)
     RGB_img = RGB_img/255.

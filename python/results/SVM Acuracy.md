@@ -1,3 +1,4 @@
+# Experiment results of various SVM models
 
 ## 1. Features from 3rd max pool in VGG16
 
@@ -37,7 +38,7 @@ _________________________________________________________________
 
 ### 256 features after passing a image through the 3rd max pooling
 
-![](results/../layer3_activation.png)
+![256 images after 3rd max pool](results/../layer3_activation.png)
 
 Extract the features from the 3rd layer and reshape to (None,200704) to feed into a SVM
 
@@ -103,6 +104,9 @@ SVM test Accuracy: 0.5976331360946746
 
 ## 3. Features from PCA
 
+
+### Binary classification 1
+
 Actually takes longer to predict SVD is harder to be performed
 
 We need to do another grid search
@@ -111,6 +115,7 @@ CPU times: user 1h 17min 8s, sys: 5min 22s, total: 1h 22min 30s
 Wall time: 21min 14s
 {'svc__C': 1, 'svc__gamma': 0.0001}
 ```
+where we get this from grid `svc__C:[1, 5, 10, 50], svc__gamma: [0.0001, 0.0005, 0.001, 0.005]`
 
 Testing:
 
@@ -123,4 +128,61 @@ Testing:
     accuracy                           0.86       169
    macro avg       0.86      0.86      0.86       169
 weighted avg       0.86      0.86      0.86       169
+```
+
+
+### Binary classification 2
+
+After another grid search, we have a better model:
+
+```
+CPU times: user 1h 13min 26s, sys: 5min 7s, total: 1h 18min 33s
+Wall time: 21min 21s
+{'svc__C': 0.05, 'svc__gamma': 0.0001}
+```
+
+where we get this from grid `svc__C:[1, 0.5, 0.1, 0.05], svc__gamma: [0.0001, 0.00005, 0.00001, 0.000005]`
+
+Testing:
+
+```
+               precision    recall  f1-score   support
+
+           0       0.87      0.90      0.88        81
+           1       0.91      0.88      0.89        88
+
+    accuracy                           0.89       169
+   macro avg       0.89      0.89      0.89       169
+weighted avg       0.89      0.89      0.89       169
+```
+
+### Binary classification 2
+
+Now we feed the original image size (25,50) into the SVM, n_components=300
+
+Training accuracy:
+
+```
+               precision    recall  f1-score   support
+
+           0       0.98      0.99      0.98       328
+           1       0.99      0.98      0.99       349
+
+    accuracy                           0.99       677
+   macro avg       0.99      0.99      0.99       677
+weighted avg       0.99      0.99      0.99       677
+```
+
+
+Testing accuracy:
+
+```
+               precision    recall  f1-score   support
+
+           0       0.91      0.86      0.89        94
+           1       0.84      0.89      0.86        75
+
+    accuracy                           0.88       169
+   macro avg       0.87      0.88      0.87       169
+weighted avg       0.88      0.88      0.88       169
 ```
