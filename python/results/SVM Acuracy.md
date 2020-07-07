@@ -186,3 +186,19 @@ Testing accuracy:
    macro avg       0.87      0.88      0.87       169
 weighted avg       0.88      0.88      0.88       169
 ```
+
+
+## 4. Verifying the stability of the PCA+SVM model
+
+```{python}
+pca = PCA(n_components=150, whiten=True, random_state=42)
+svc = SVC(kernel='linear', C=0.05)
+```
+
+![pca_svm_cv_acc_0707](pca_svm_cv_acc_0707.png)
+
+```
+                  mean       std
+train_score    0.976318    0.005519
+test_score     0.876260    0.020383
+```
