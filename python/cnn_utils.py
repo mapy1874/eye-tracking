@@ -290,3 +290,42 @@ def verify_df(df):
             bad_data_ids.append(id)
 
     return bad_data_ids
+
+
+def test_robustness(df):
+    """
+    For testing the robustness of our PCA+SVM model when we split the train and test randomly
+    """
+    train_scores, test_scores = [], []
+    for i in range(200):
+        X_train, X_test, y_train, y_test = train_test_split(df.loc[:,df.columns!="y"],df.loc[:,df.columns=="y"], test_size=0.3)
+
+        eyeImage_train = np.stack(X_train['eyeImage'].to_numpy())
+        eyeImage_test = np.stack(X_test['eyeImage'].to_numpy())
+        y_train_binary = create_binary_labels(y_train)
+        y_test_binary = create_binary_labels(y_test)
+
+        # reshape to make it possible to feed into SVM
+        eyeImage_train = eyeImage_train.reshape(eyeImage_train.shape[0],eyeImage_train.shape[1]*eyeImage_train.shape[2]*eyeImage_train.shape[3])
+        eyeImage_test = eyeImage_test.reshape(eyeImage_test.shape[0],eyeImage_test.shape[1]*eyeImage_test.shape[2]*eyeImage_test.shape[3])
+        pca = PCA(n_components=150, whiten=True, random_state=42)
+        svc = SVC(kernel='linear', C=0.05)
+        svm_model = make_pipeline(pca, svc)
+        svm_model.fit(eyeImage_train, y_train_binary)
+        # param_grid = {'svc__C': [100,50,10,5,1,0.5,0.1, 0.05, 0.01, 0.005, 0.001]}
+        # grid = GridSearchCV(svm_model, param_grid)
+        # %time grid.fit(eyeImage_train, y_train_binary)
+        # print(grid.best_params_)
+
+        # svm_model = grid.best_estimator_
+
+        train_score = svm_model.score(eyeImage_train, y_train_binary, sample_weight=None)
+        test_score = svm_model.score(eyeImage_test, y_test_binary, sample_weight=None)
+
+        train_scores.append(train_score)
+        test_scores.append(test_score)
+        svm_model = None
+
+    data = {'train_score':train_scores, 'test_score':test_scores}
+
+    return pd.DataFrame(data)

@@ -202,3 +202,14 @@ svc = SVC(kernel='linear', C=0.05)
 train_score    0.976318    0.005519
 test_score     0.876260    0.020383
 ```
+
+## 5. Use extreme training and testing data
+
+
+![pca_svm_cv_acc_extreme_0707](pca_svm_cv_acc_extreme_0707.png)
+
+```
+                  mean       std
+train_score    0.999492    0.001213
+test_score     0.920197    0.022098
+```
