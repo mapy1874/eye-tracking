@@ -1,4 +1,4 @@
-# Experiment results of various SVM models
+# Experiment results of various classical ML models
 
 ## 1. Features from 3rd max pool in VGG16
 
@@ -213,3 +213,85 @@ test_score     0.876260    0.020383
 train_score    0.999492    0.001213
 test_score     0.920197    0.022098
 ```
+
+
+
+## 6. Use a person's data
+
+![pca_svm_person_0713](pca_svm_person_0713.png)
+
+PCA has 36 components in this situation because the data set is small! `n_components<=min(n_samples, n_features)` 
+
+```python
+pca = PCA(n_components=36, whiten=True, random_state=42)
+svc = SVC(kernel='linear', C=0.05)
+```
+
+
+
+```
+                  mean       std
+train_score    0.990694    0.010051
+test_score     0.921406    0.043181
+```
+
+
+
+## 7. Add left/right eye positions as input
+
+We did not scale the input as all parameters falls between [-1,1]
+
+```python
+pca = PCA(n_components=125, whiten=True)
+svc = SVC(kernel='linear', C=0.1)
+
+# prepare the input training data
+pca.fit(eyeImage_train)
+eyeImage_train = pca.transform(eyeImage_train)
+input_train = np.concatenate((eyeImage_train, leftEye_train, rightEye_train), axis=1)
+scalar.fit(input_train)
+input_train = scalar.transform(input_train)
+```
+
+![PCA_SVM_eye_acc_0716](PCA_SVM_eye_acc_0716.png)
+
+                  	mean       std
+    train_score    0.973553    0.004226
+    test_score     0.895474 	 0.019262
+* Improvement in the test score comparing to the vallina model may be due to the incresing size of the dataset
+
+Use the same hyper parameters to test on the vallina model:
+
+![pca_svm_cv_acc_0716](pca_svm_cv_acc_0716.png)
+
+              				mean       std
+    train_score    0.975571    0.005017
+    test_score     0.892000 	 0.016697
+Add left/right eye positions or not does not affect the train/test score too much
+
+
+
+## 8. Use PCA+Logistic Regression(L1)
+
+![PCA_logitl1_acc_0716](PCA_logitl1_acc_0716.png)
+
+This is the first time that I achieved a mean test score > 0.9. Simplicity matters.
+
+```python
+pca = PCA(n_components=125, whiten=True)
+logit = LogisticRegression(penalty='l1', solver='saga',C=0.163)
+logit_model = make_pipeline(pca, logit)
+```
+
+```
+                  mean       std
+train_score    0.963128    0.006685
+test_score     0.913333 	 0.015696
+```
+
+
+
+## 9. Use PCA+eye position+Logit(L1)
+
+![PCA_logitL1_eye_acc_0716](PCA_logitL1_eye_acc_0716.png)
+
