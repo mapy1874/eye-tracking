@@ -295,3 +295,31 @@ test_score     0.913333 	 0.015696
 
 ![PCA_logitL1_eye_acc_0716](PCA_logitL1_eye_acc_0716.png)
 
+```python
+# model part
+pca = PCA(n_components=125, whiten=True)
+scalar = StandardScaler()
+logit = LogisticRegression(penalty='l1',solver='saga',C=0.20) 
+
+# prepare the input training data
+pca.fit(eyeImage_train)
+eyeImage_train = pca.transform(eyeImage_train)
+input_train = np.concatenate((eyeImage_train, leftEye_train, rightEye_train), axis=1)
+scalar.fit(input_train)
+input_train = scalar.transform(input_train)
+```
+
+
+
+```
+                  mean       std
+train_score    0.967669    0.004886
+test_score     0.912491 	 0.015730
+```
+
+The improvement, again, is not huge comparing to the model without eye position
+
+## 10.  Use PCA+Logit(L1) on far left&right data
+
+![PCA_logitL1_eye_acc_extreme_0716](PCA_logitL1_eye_acc_extreme_0716.png)
+
